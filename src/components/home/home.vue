@@ -124,6 +124,7 @@
 					</a>
 				</li>
 			</ul>
+			<p v-if="hasNextFlag == false" style="line-height:40px;">没有更多的数据了</p>
 
 		</div>
 
@@ -136,18 +137,22 @@
 		components: { //引入组件
 		},
 		ready: function() {
-			this.getFloorFlashPart();
-			this.getStoreList();
+			var self = this;
+			self.getFloorFlashPart();
+			self.getStoreList();
 			var $windowH = $(window).height();
 			var $documentH = $(document).height();
 			
-			// $(document).scroll(function(){
-			// 	var $scrollTop = $(this).scrollTop();
-			// 	var $scrollH = $(this).scrollHeight()
-			// 	var $wTop = $(window).scrollTop();
-			// 	var isEnd = $documentH - $windowH - $scrollTop;
-			// 	console.log($scrollTop,$wTop);
-			// })
+			 $(document).on("scroll",function(){
+			 	var $scrollTop = $(this).scrollTop();
+			 	var $h = $(this).height();
+			 	var $total = $h - $scrollTop - $windowH;
+				if($total <2){
+					self.getStoreListData.pageNo++;
+					self.getStoreList();
+				}
+			 	
+			 })
 		},
 		methods: {
 			getFloorFlashPart: function() {
@@ -169,13 +174,16 @@
 			},
 			getStoreList: function() {
 				var self = this;
+				if(self.hasNextFlag == false)return;
 				$.ajax({
 					url:'http://m.putiandi.com/appServer/popup/list/query?',
 					data: self.getStoreListData,
 					type: 'GET',
 					dataType: 'json',
 				}).done(function(data){
-					self.storeList = data.result.result;
+					self.hasNextFlag = data.result.hasNext;
+					self.storeList = self.storeList.concat(data.result.result);
+					console.log(self.hasNextFlag);
 				});
 			},
 			willOpen: function() {
@@ -205,7 +213,8 @@
 				rightPosition: null,
 				rightTime: null,
 				exhibition: null,
-				storeList: null,
+				storeList: [],
+				hasNextFlag:null,
 				getStoreListData:{cityCode:'310100', pageNo:1, pageSize:10},
 				items: [{
 					cityname: "上海市",
