@@ -1,0 +1,113 @@
+<template>
+<div v-if="setImgCopy()">
+	<div class="addPhotoViewBox" v-for="path in imgField[imgFieldName+'Copy'] | orderBy 'key'" track-by="$index">
+		<s class="remove" @click='removeImg($index)'>删除</s>
+		<img :src="path.value" width="100px" height="75px" alt="">
+	</div>
+	<div class="listImg add" v-if="imgField[imgFieldName+'Copy'].length < maxNum">
+		<input type="file" multiple id="{{imgFieldName}}" @change='addPhotos($event)' accept="image/jpeg, image/png" />
+		<div class="floatBox">
+			<i></i>
+			<span>{{imgSizeMsg}}</span>
+		</div>
+	</div>
+</div>
+</template>
+
+<script>
+module.exports = {
+	props: {
+		imgField: null, imgFieldName: null, maxNum: 0, imgSizeMsg:null, uploadUrl: null
+	},
+	methods: {
+		setImgCopy: function(){
+			if(!this.imgField) return false;
+			if(!this.imgField[this.imgFieldName+"Copy"]){
+				if(!this.imgField[this.imgFieldName]){
+		        	Vue.set(this.imgField, this.imgFieldName, "");
+		        	Vue.set(this.imgField, this.imgFieldName+"Copy", []);
+		        	this.imgField[this.imgFieldName+"Length"] = 0;
+		        }else{
+		        	var img = this.imgField[this.imgFieldName].split(',');
+		        	this.imgField[this.imgFieldName+"Length"] = img.length;
+		        	Vue.set(this.imgField, this.imgFieldName+"Copy", []);
+		            for(var i=0;i<img.length;i++){
+		            	var path = {key: i, value: img[i]};
+		            	this.imgField[this.imgFieldName+"Copy"].push(path);
+		            }
+		        }
+			}
+			return true;
+		},
+		//添加图片
+		addPhotos: function(obj) {
+			var self = this;
+			var aId = $(obj.target).attr('id');
+			var fileObj = document.getElementById(aId).files,fileObj_len=fileObj.length; // 获取文件对象
+			if(self.imgField[self.imgFieldName+'Copy'].length+fileObj_len > self.maxNum){
+				alert("最多上传"+self.maxNum+"张图片，还可以上传"+(self.maxNum-self.imgField[self.imgFieldName+'Copy'].length)+"张");
+				$("#"+aId).val("");
+				return;
+			}
+			var form = new FormData();
+			for(var i = 0; i < fileObj_len; i++){	
+				form.append("file"+i, fileObj[i]);
+			}
+			var xhr = new XMLHttpRequest();
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState == 4 && xhr.status == 200) {
+					var xmlDoc = eval('(' + xhr.responseText + ')');
+					if (xmlDoc.success == true) {
+						if (window.FileReader) {
+							for(var item in xmlDoc.result){
+								var srcPath = xmlDoc.result[item].filePath;
+								var reader = new FileReader();
+								reader.num = self.imgField[self.imgFieldName+"Length"];
+								self.imgField[self.imgFieldName+"Length"]+=1;
+								self.setImgField("push", srcPath);
+								reader.onload=function(){
+									var path = {key: this.num, value: this.result};
+									self.imgField[self.imgFieldName+"Copy"].push(path);
+								}
+								if (fileObj[item]) {
+									reader.readAsDataURL(fileObj[item]);
+								}
+							}
+						}
+					} else {
+						alert(xmlDoc.msg);
+					}
+				}
+			}
+			xhr.open("post", self.uploadUrl, false);
+			try{
+				xhr.send(form);
+			} catch (e) {
+				alert("发生异常");
+			}
+			$("#"+aId).val("");
+		},
+		setImgField: function(handle, parameter){
+			var self = this;
+			if(self.imgField[self.imgFieldName] == ""){
+				self.imgField[self.imgFieldName] = [];
+			}else{
+				self.imgField[self.imgFieldName] = self.imgField[self.imgFieldName].split(',');
+			}
+			if(handle == "push"){
+				self.imgField[self.imgFieldName].push(parameter);
+			}
+			if(handle == "remove"){
+				self.imgField[self.imgFieldName].splice(parameter, 1);
+			}
+			self.imgField[self.imgFieldName] = self.imgField[self.imgFieldName].toString();
+		},
+		//移除图片
+		removeImg: function(index) {
+			var self = this;
+			self.setImgField("remove", index);
+			self.imgField[self.imgFieldName+"Copy"].splice(index, 1);
+		}
+	}
+};
+</script>

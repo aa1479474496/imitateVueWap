@@ -1,0 +1,451 @@
+<template>
+    <div class="login_main login box-show">
+        <div class="login_con clearfix">
+            <div class="con con_l">
+                <img src="../../assets/images/login.jpg" alt="">
+            </div>
+            <div class="con con_r" v-show="!showResetPassword">
+                <div class="login_nav clearfix"><span :class="{ 'span_focus': passwordLogin}" @click="passwordLogin = true">账号密码登录</span><span :class="{ 'span_focus': !passwordLogin}"
+                                                                                                                                               @click="passwordLogin = false">手机验证码登录</span></div>
+                <div class="tab-content">
+                    <form name="passwordLoginForm" onsubmit="" id="passwordLoginForm" class="account_login" v-show="passwordLogin" autocomplete="off">
+                        <div class="por">
+                            <s class="userName"></s>
+                            <input class="form-control " name="mobile" type="text" data-toggle="tooltip" data-placement="top" title="请输入您的11位手机号码"
+    placeholder="用户手机号" v-model="passwordLoginForm.mobile" @focus="passwordLoginForm.mobileError=''">
+                        </div>
+                        <p>{{passwordLoginForm.mobileError}}</p>
+                        <div class="por clearfix">
+                            <s class="passWord"></s>
+                            <input class="form-control" type="password" name="password" data-toggle="tooltip" data-placement="top" title="6-20位字母，数字和符号两种以上组合" placeholder="用户密码" v-model="passwordLoginForm.password" @focus="passwordLoginForm.passwordError=''">
+                        </div>
+                        <p>{{passwordLoginForm.passwordError}}</p>
+                        <div class="por clearfix">
+
+                            <div class="put_por">
+                                <s class="pic_yzm"></s>
+                                <input class="form-control" type="text" name="captchaVerifyCode" placeholder="图片验证码" v-model="passwordLoginForm.captchaVerifyCode"
+                                       @focus="passwordLoginForm.captchaVerifyCodeError=''">
+                            </div>
+                            <div class="yzm">
+                                <img class="max37" :src="captchaPath" alt="点击重新获取" @click="getNewCaptcha()">
+                            </div>
+                        </div>
+                        <p>{{passwordLoginForm.captchaVerifyCodeError}}</p>
+
+                        <p class="jz_pass">
+                            <a @click="showResetPassword=true">忘记密码</a>
+                            <ins class="checkbox_block">
+                                <input type="checkbox" id="check" name="" v-model="passwordLoginForm.rememberMe"/>
+                                <label for="check"></label>
+                            </ins>
+                            <label for="check">记住我</label>
+                        </p>
+                        <input class="submit" type="submit" value="登 &nbsp; 录" id="password_login_submit">
+                    </form>
+                    <form name="mobileLoginForm" onsubmit="" id="mobileLoginForm" class="iphone_login" v-show="!passwordLogin" autocomplete="off">
+                        <div class="por">
+                            <s class="userName"></s>
+                            <input class="form-control" name="mobile" type="text" data-toggle="tooltip" data-placement="top" title="请输入您的11位手机号码" placeholder="用户手机号" v-model="mobileLoginForm.mobile" @focus="mobileLoginForm.mobileError=''">
+                        </div>
+                        <p>{{mobileLoginForm.mobileError}}</p>
+                        <div class="por clearfix">
+                            <s class="passWord"></s>
+                            <div class="put_por">
+                                <input class="form-control" type="text" name="captchaVerifyCode" placeholder="手机验证码" v-model="mobileLoginForm.mobileVerifyCode"
+                                       @focus="mobileLoginForm.mobileVerifyCodeError=''">
+                            </div>
+                            <input class="yzm iphone" type="button" id="iphone_yzm" value="获取手机验证码">
+                        </div>
+                        <p>{{mobileLoginForm.mobileVerifyCodeError}}</p>
+                        <div class="por clearfix">
+
+                            <div class="put_por">
+                                <s class="pic_yzm"></s>
+                                <input class="form-control" type="text" name="captchaVerifyCode" placeholder="图片验证码" v-model="mobileLoginForm.captchaVerifyCode"
+                                       @focus="mobileLoginForm.captchaVerifyCodeError=''">
+                            </div>
+                            <div class="yzm">
+                                <img class="max37" :src="captchaPath" alt="点击重新获取" @click="getNewCaptcha()">
+                            </div>
+                        </div>
+                        <p>{{mobileLoginForm.captchaVerifyCodeError}}</p>
+                        <input class="submit" type="submit" value="登 &nbsp; 录" id="mobile_login_submit">
+                    </form>
+                </div>
+            </div>
+
+            <div class="con con_r" v-show="showResetPassword">
+                <div class="login_nav clearfix"><span class="span_focus">找回密码</span><span @click="showResetPassword = false"><i class="getBackLogin">返回登录</i></span></div>
+                <div class="tab-content">
+                    <form name="resetPasswordForm" onsubmit="" id="resetPasswordForm" class="account_login" v-show="passwordLogin" autocomplete="off">
+                        <div class="por">
+                            <s class="userName"></s>
+                            <input class="form-control" name="mobile" type="text" placeholder="用户手机号" data-toggle="tooltip" data-placement="top" title="请输入您的11位手机号码" v-model="resetPasswordForm.mobile" @focus="resetPasswordForm.mobileError=''">
+                        </div>
+                        <p>{{resetPasswordForm.mobileError}}
+                        <div class="por clearfix">
+                            <s class="mobileCode"></s>
+                            <div class="put_por ">
+                                <input class="form-control" type="text" name="captchaVerifyCode" placeholder="手机验证码" v-model="resetPasswordForm.mobileVerifyCode"
+                                       @focus="resetPasswordForm.mobileVerifyCodeError=''">
+                            </div>
+                            <input class="yzm iphone" type="button" id="reset_sms" value="获取手机验证码">
+                        </div>
+                        <p>{{resetPasswordForm.mobileVerifyCodeError}}</p>
+                        <div class="por clearfix">
+                            <s class="passWord"></s>
+                            <input class="form-control" type="password" name="password" data-toggle="tooltip" data-placement="top" title="6-20位字母，数字和符号两种以上组合" placeholder="输入新密码" v-model="resetPasswordForm.password" @focus="resetPasswordForm.passwordError=''">
+                        </div>
+                        <p>{{resetPasswordForm.passwordError}}</p>
+                        <div class="por clearfix">
+                            <s class="passWord"></s>
+                            <input class="form-control" type="password" data-toggle="tooltip" data-placement="top" title="请再次确认新密码" name="password" placeholder="确认新密码" v-model="resetPasswordForm.confirmPassword"
+                                   @focus="resetPasswordForm.confirmPasswordError=''">
+                        </div>
+                        <p>{{resetPasswordForm.confirmPasswordError}}</p>
+                        <input class="submit" type="submit" value="提 &nbsp; 交" id="reset_password_submit">
+                    </form>
+                </div>
+            </div>
+
+            <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modelTitle">
+                            <div class="close" data-dismiss="modal">
+                                X
+                            </div>
+                        </div>
+                        <div class="main">
+                            <div class="del_main" style="display: block">
+                                <p>密码设置成功</p>
+                                <div class="btnWrap">
+                                    <button style="display: block; margin: 0px auto" class="btn btn-default btn-sm"  data-toggle="modal" data-target=".bs-example-modal-lg">确定</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div id="tips" style="position:fixed;outline:1px solid skyblue;display:none;z-index:999;"></div>
+</template>
+
+<script>
+    import {login} from '../../vuex/actions'
+    import {getAuth} from '../../vuex/getters'
+
+    export default {
+        vuex: {
+            actions: {
+                login: login
+            },
+            getters: {
+                auth: getAuth
+            }
+        },
+        ready: function () {
+            if (this.auth) {
+                this.$route.router.go({name: 'home'});
+                return;
+            }
+
+            var vue = this;
+            var login_mobile = $.cookie('login_mobile');
+            if (login_mobile) {
+                vue.passwordLoginForm.mobile = login_mobile;
+                vue.passwordLoginForm.rememberMe = true;
+            }
+
+            $("input").keyup(function (e) {
+                if (e.keyCode == 13) {
+                    $("form:visible:submit").click();
+                }
+            });
+
+            $("form").submit(function () {
+                return false;
+            });
+            
+            function tips($ele){
+            	var $width = $ele.width();
+            	var $left = $ele.offset().left;
+            	var $top = $ele.offset().top;
+            	var $text = $ele.attr("data-tips");
+            	$("#tips").html($text);
+            	var $height = $("#tips").height();
+            	$("#tips").css({
+            		width:$width,
+            		left:$left,
+            		top:$top - $height
+            	}).show();
+            }
+            
+            $("[data-toggle='tooltip']").tooltip(); 
+            
+            var setPasswordLoginSubmit = function () {
+                $("#password_login_submit").click(function () {
+                    passwordLoginSubmit();
+                });
+            };
+
+            function extracted(bindSubmit, form) {
+                var validation = true;
+
+                form.mobile = form.mobile != "" ? $.trim(form.mobile) : "";
+                if (form.password)
+                    form.password = form.password != "" ? $.trim(form.password) : "";
+                if (form.mobileVerifyCode)
+                    form.mobileVerifyCode = form.mobileVerifyCode != "" ? $.trim(form.mobileVerifyCode) : "";
+                form.captchaVerifyCode = form.captchaVerifyCode != "" ? $.trim(form.captchaVerifyCode) : "";
+                if (form.mobile == "") {
+                    form.mobileError = "请输入用户手机号";
+                } else if (typeof(form.password) != "undefined" && form.password == "") {
+                    form.passwordError = "请输入用户密码";
+                } else if (typeof(form.mobileVerifyCode) != "undefined" && form.mobileVerifyCode == "") {
+                    form.mobileVerifyCodeError = "请输入手机验证码";
+                } else if (form.captchaVerifyCode == "") {
+                    form.captchaVerifyCodeError = "请输入图片验证码";
+                } else if (form.mobile.match(/^[1][3,4,5,8,7]\d{9}$/) == null) {
+                    form.mobileError = "请输入正确的手机号";
+                } else if (typeof(form.mobileVerifyCode) != "undefined" && form.mobileVerifyCode.length != 6) {
+                    form.mobileVerifyCodeError = "请输入正确的手机验证码";
+                } else if (form.captchaVerifyCode.length != 4) {
+                    form.captchaVerifyCodeError = "请输入正确的图片验证码";
+                } else {
+                    validation = false;
+                    vue.$resource('/erpServer/innerAuth/token').save({
+                        mobile: form.mobile,
+                        password: form.password,
+                        mobileVerifyCode: form.mobileVerifyCode,
+                        captchaVerifyCode: form.captchaVerifyCode
+                    }).then(function (response) {
+                        vue.captchaPath = "/erpServer/innerAuth/getCaptcha?v=" + new Date().getTime();
+                        //用户信息
+                        vue.login(response.data);
+                        $.cookie('staffInfo', JSON.stringify(response.data), {path: '/'});
+                        //记住我
+                        if (form.rememberMe) {
+                            $.cookie('login_mobile', form.mobile, {expires: 30});
+                        } else {
+                            $.cookie('login_mobile', null, {expires: -1, path: '/'});
+                        }
+                        //跳转路径
+                        var p = vue.$route.query.redirect;
+                        if (typeof(p) != "undefined") {
+                            vue.$route.router.go(p);
+                        } else {
+                            vue.$route.router.go({name: 'home'});
+                        }
+                        //防止出错后点击不了登录按钮
+                        bindSubmit();
+                    }, function (response) {
+                        vue.captchaPath = "/erpServer/innerAuth/getCaptcha?v=" + new Date().getTime();
+                        if (response.status === 400) {
+                            switch (response.data.error_code) {
+                                case 1:
+                                    form.passwordError = "用户名或密码错误";
+                                    break;
+                                case 2:
+                                    form.captchaVerifyCode = "";
+                                    form.captchaVerifyCodeError = "图片验证码错误";
+                                    break;
+                                case 3:
+                                    alert("运营商未启用");
+                                    break;
+                                default:
+                                    alert("对不起~~出错啦");
+                                    break;
+                            }
+                        } else {
+                            alert("对不起~~出错啦");
+                        }
+                        bindSubmit();
+                    });
+                }
+                if (validation)
+                    bindSubmit();
+            }
+
+            var passwordLoginSubmit = function () {
+                $("#password_login_submit").unbind();
+                extracted(setPasswordLoginSubmit, vue.passwordLoginForm);
+            };
+
+            setPasswordLoginSubmit();
+
+            var setMobileLoginSubmit = function () {
+                $("#mobile_login_submit").click(function () {
+                    mobileLoginSubmit();
+                });
+            };
+
+            var mobileLoginSubmit = function () {
+                $("#mobile_login_submit").unbind();
+                extracted(setMobileLoginSubmit, vue.mobileLoginForm);
+            };
+
+            setMobileLoginSubmit();
+
+            var setResetPasswordSubmit = function () {
+                $("#reset_password_submit").click(function () {
+                    resetPasswordSubmit();
+                });
+            };
+
+            var resetPasswordSubmit = function () {
+                $("#reset_password_submit").unbind();
+                var validation = true;
+                var form = vue.resetPasswordForm;
+
+                form.mobileError = "";
+                form.mobileVerifyCodeError = "";
+                form.passwordError = "";
+
+                form.mobile = form.mobile != "" ? $.trim(form.mobile) : "";
+                form.mobileVerifyCode = form.mobileVerifyCode != "" ? $.trim(form.mobileVerifyCode) : "";
+                form.password = form.password != "" ? $.trim(form.password) : "";
+                form.confirmPassword = form.confirmPassword != "" ? $.trim(form.confirmPassword) : "";
+                if (form.mobile == "") {
+                    form.mobileError = "请输入用户手机号";
+                } else if (form.mobileVerifyCode == "") {
+                    form.mobileVerifyCodeError = "请输入手机验证码";
+                } else if (form.password == "") {
+                    form.passwordError = "请输入新密码";
+                } else if (form.confirmPassword == "") {
+                    form.confirmPasswordError = "请输入确认密码";
+                } else if (form.mobile.match(/^[1][3,4,5,8,7]\d{9}$/) == null) {
+                    form.mobileError = "请输入正确的手机号";
+                } else if (form.mobileVerifyCode.length != 6) {
+                    form.mobileVerifyCodeError = "请输入正确的手机验证码";
+                } else if (form.password.match(/^(?!^[0-9]+$)(?!^[a-zA-Z]+$)^.{6,20}$/) == null) {
+                    form.passwordError = "必须是6-20个字母、数字或符号的组合";
+                } else if (form.password != form.confirmPassword) {
+                    form.confirmPasswordError = "两次输入的密码不一致";
+                } else {
+                    validation = false;
+                    vue.$resource('/erpServer/innerAuth/resetPassword').save({
+                        mobile: form.mobile,
+                        password: form.password,
+                        mobileVerifyCode: form.mobileVerifyCode
+                    }).then(function (response) {
+                        $(".bs-example-modal-lg").modal({
+                            show: true
+                        });
+                        wait = 1;
+                        vue.showResetPassword = false;
+                        setResetPasswordSubmit();
+                    }, function (response) {
+                        if (response.status === 400 && response.data.error_code === 3) {
+                            form.mobileVerifyCodeError = "手机验证码错误";
+                        } else {
+                            alert("对不起~~出错啦");
+                        }
+                        setResetPasswordSubmit();
+                    });
+                }
+                if (validation)
+                    setResetPasswordSubmit();
+            };
+
+            setResetPasswordSubmit();
+
+            //验证码 倒计时
+            var wait = 60;
+
+            function time(o) {
+                if (wait == 0) {
+                    o.removeAttribute("disabled");
+                    $(".yzm.iphone").val('重新获取');
+                }
+                else {
+                    o.setAttribute("disabled", true);
+                    o.value = "剩余" + wait + "秒";
+                    wait--;
+                    setTimeout(function () {
+                        time(o)
+                    }, 1000)
+                }
+            }
+
+            var sendSms = function (t, form, tp) {
+                form.mobile = form.mobile != "" ? $.trim(form.mobile) : "";
+                if (form.mobile == "") {
+                    form.mobileError = "请输入用户手机号";
+                    return;
+                }
+                if (form.mobile.match(/^[1][3,4,5,8,7]\d{9}$/) == null) {
+                    form.mobileError = "请输入正确的手机号";
+                    return;
+                }
+                vue.$resource('/erpServer/innerAuth/sendSMS').save({
+                    mobile: form.mobile,
+                    type: tp
+                }).then(function (response) {
+                    if (!response.data.success) {
+                        alert("对不起~~出错啦");
+                    } else if (response.data.result == -1) {
+                        form.mobileError = "该手机号不存在";
+                    } else {
+                        wait = 60;
+                        time(t);
+                    }
+                }, function (response) {
+                    alert("对不起~~出错啦");
+                });
+            };
+
+            document.getElementById("iphone_yzm").onclick = function () {
+                sendSms(this, vue.mobileLoginForm, 0);
+            };
+
+            document.getElementById("reset_sms").onclick = function () {
+                sendSms(this, vue.resetPasswordForm, 1);
+            };
+        },
+        data () {
+            return {
+                passwordLoginForm: {
+                    mobile: "",
+                    mobileError: "",
+                    password: "",
+                    passwordError: "",
+                    captchaVerifyCode: "",
+                    captchaVerifyCodeError: "",
+                    rememberMe: false
+                },
+                mobileLoginForm: {
+                    mobile: "",
+                    mobileError: "",
+                    mobileVerifyCode: "",
+                    mobileVerifyCodeError: "",
+                    captchaVerifyCode: "",
+                    captchaVerifyCodeError: ""
+                },
+                resetPasswordForm: {
+                    mobile: "",
+                    mobileError: "",
+                    mobileVerifyCode: "",
+                    mobileVerifyCodeError: "",
+                    password: "",
+                    passwordError: "",
+                    confirmPassword: "",
+                    confirmPasswordError: ""
+                },
+                passwordLogin: true,
+                showResetPassword: false,
+                captchaPath: "/erpServer/innerAuth/getCaptcha?v=" + new Date().getTime(),
+                redirect: ""
+            }
+        },
+        methods: {
+            getNewCaptcha: function () {
+                this.captchaPath = "/erpServer/innerAuth/getCaptcha?v=" + new Date().getTime();
+            }
+        }
+    }
+
+</script>

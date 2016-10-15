@@ -1,0 +1,295 @@
+<template>
+    <div class="section section2 box-show">
+        <h3>商业体立面图
+            <!--<i @click="_stickyThis"  class="top" data-toggle="tooltip" data-placement="top" title="置顶"></i>-->
+        </h3>
+        <div class="p50 clearfix">
+            <div class="posr">
+                <div class="sec dropdown" >
+                    <div class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">{{floorFlashPart.floorFlash.mallName}}</div>
+                    <div class="dropdown-menu">
+                        <ul>
+                            <li  v-for="mall in floorFlashPart.malls" @click="selectMallInfo(mall.mallCode,mall.mallName)" :title="mall.mallName">{{mall.mallName}}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="sec dropdown">
+                    <div class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">{{floorFlashPart.floorFlash.buildingzoneName}}</div>
+                    <div class="dropdown-menu">
+                        <ul>
+                            <li  v-for="buildingzone in floorFlashPart.buildingzones" @click="selectBuildingzoneInfo(buildingzone.buildingzoneCode,buildingzone.buildingzoneName)">{{buildingzone.buildingzoneName}}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="sec dropdown">
+                    <div class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">{{floorFlashPart.floorFlash.floorName}}</div>
+                    <div class="dropdown-menu">
+                        <ul>
+                            <li v-for="floor in floorFlashPart.floors" @click="selectFloorInfo(floor.floorCode,floor.floorName)">{{floor.floorName}}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="tb mj">
+                <div class="clearfix">
+                    <div class="fl" id="indicatorContainer" style="width: 100px;height: 100px;"></div>
+                    <div class="dkl fl">
+                        <p>总面积：{{floorFlashPart.countData.totalArea}}平米</p>
+                        <p>已签约面积：{{floorFlashPart.countData.signArea}}平米</p>
+                    </div>
+                </div>
+                <ins style="margin-top:10px;">楼层签约面积率</ins>
+            </div>
+            <div class="tb rz">
+                <div class="clearfix">
+                    <div class="fl" id="indicatorContainer2" style="width: 100px;height: 100px;"></div>
+                    <div class="dkl fl">
+                        <p>总铺数：{{floorFlashPart.countData.totalNum}}间</p>
+                        <p>满铺数：{{floorFlashPart.countData.signNum}}间</p>
+                    </div>
+                </div>
+                <ins style="margin-top:10px;">商铺入驻率</ins>
+            </div>
+        </div>
+        <div id="elevationExhibition" :class="{'nofloorflash':!showFloorFlash}">
+            <iframe id="mapFrame"  name="mapFrame" :src="floorFlashPart.floorFlash.floorFlash+'?w=900'" v-if="showFloorFlash"
+                    allowtransparency="true" style="background:#fff;" frameborder="0" width="900" height="600" scrolling="no">
+            </iframe>
+        </div>
+    </div>
+</template>
+<style>
+    .nofloorflash{background:url("../../assets/images/nofloorflash.png") no-repeat -400px -400px !important;}
+</style>
+<script>
+//    :src="floorFlashPart.floorFlash.floorBackpic+'?w=900'"
+
+    module.exports = {
+        props: {
+            floorFlashPart:{}
+        },
+        ready: function () {
+            var self = this;
+            var echarts= require('echarts');
+            self.areaChart = echarts.init(document.getElementById('indicatorContainer'));
+            self.shopChart = echarts.init(document.getElementById('indicatorContainer2'));
+            self.areaOption.series[0].data[0].value=self.floorFlashPart.countData.totalArea>0?self.floorFlashPart.countData.totalArea-self.floorFlashPart.countData.signArea:100;
+            self.areaOption.series[0].data[1].value=self.floorFlashPart.countData.signArea>0?self.floorFlashPart.countData.signArea:0;
+            self.areaOption.series[0].markPoint.data[0].value=Math.round(self.floorFlashPart.countData.totalArea>0?self.floorFlashPart.countData.signArea/self.floorFlashPart.countData.totalArea*100:0);
+            self.shopOption.series[0].data[0].value=self.floorFlashPart.countData.totalNum>0?self.floorFlashPart.countData.totalNum-self.floorFlashPart.countData.signNum:100;
+            self.shopOption.series[0].data[1].value=self.floorFlashPart.countData.signNum>0?self.floorFlashPart.countData.signNum:0;
+            self.shopOption.series[0].markPoint.data[0].value=Math.round(self.floorFlashPart.countData.totalNum>0?self.floorFlashPart.countData.signNum/self.floorFlashPart.countData.totalNum*100:0);
+            self.areaChart.setOption(self.areaOption);
+            self.shopChart.setOption(self.shopOption);
+        },
+        methods:{
+            configAreaChart:function(){
+
+            },
+            selectMallInfo: function (mallCode, mallName) {//选中商业体
+                var self = this;
+                self.floorFlashPart.floorFlash.mallName = mallName;
+                self.floorFlashPart.floorFlash.buildingzoneName ="";
+                self.floorFlashPart.floorFlash.floorName="";
+                self.floorFlashPart.floors=[];
+                self.getBuildingzoneList(mallCode);
+
+            },
+            getBuildingzoneList: function (mallCode) {//获取幢列表
+                var self = this;
+                $.ajax({
+                    url: '/erpServer/buildingzone/all/withoutfilter',
+                    data: {
+                        mallCode: mallCode
+                    },
+                    type: 'GET',
+                    dataType: 'json'
+                }).done(function (data) {
+                    self.floorFlashPart.buildingzones = data.result;//幢列表
+                })
+            },
+            selectBuildingzoneInfo: function (buildingzoneCode, buildingzoneName) {//选中幢
+                var self = this;
+                self.floorFlashPart.floorFlash.buildingzoneName = buildingzoneName;
+                self.floorFlashPart.floorFlash.floorName = "";
+                self.getFloorList(buildingzoneCode);
+            },
+            getFloorList: function (buildingzoneCode) {//获取层列表
+                var self = this;
+                $.ajax({
+                    url: '/erpServer/floor/getFloorsWithoutFilter',
+                    data: {
+                        buildingzoneCode: buildingzoneCode
+                    },
+                    type: 'POST',
+                    dataType: 'json'
+                }).done(function (data) {
+                    self.floorFlashPart.floors = data.result;//幢列表
+                })
+            },
+            selectFloorInfo: function (floorCode, floorName) {//选中楼层
+                var self = this;
+                self.floorFlashPart.floorFlash.floorName = floorName;
+                //获取统计数据
+                $.ajax({
+                    url: '/erpServer/floor/flash/homepart/floor',
+                    data:{floorCode:floorCode},
+                    type: 'GET',
+                    dataType: 'json',
+                    contentType:"application/json"
+                }).done(function (data) {
+                    if(data.success){
+                        self.floorFlashPart.countData = data.result.countData;
+                        var newFloorFlash =data.result.floorflash;
+                        if(newFloorFlash){
+                            if (newFloorFlash.floorBackpic && newFloorFlash.floorBackpic!=''&&newFloorFlash.floorFlash&&newFloorFlash.floorFlash!=''){
+                                self.floorFlashPart.floorFlash.floorBackpic = newFloorFlash.floorBackpic;
+                                self.floorFlashPart.floorFlash.floorFlash = newFloorFlash.floorFlash;
+                                self.showFloorFlash = true;
+                            }else {
+                                self.showFloorFlash = false;
+                            }
+                        }else {
+                            self.showFloorFlash = false;
+                        }
+                        self.areaOption.series[0].data[0].value=self.floorFlashPart.countData.totalArea>0?self.floorFlashPart.countData.totalArea-self.floorFlashPart.countData.signArea:100;
+                        self.areaOption.series[0].data[1].value=self.floorFlashPart.countData.signArea>0?self.floorFlashPart.countData.signArea:0;
+                        self.areaOption.series[0].markPoint.data[0].value=Math.round(self.floorFlashPart.countData.totalArea>0?self.floorFlashPart.countData.signArea/self.floorFlashPart.countData.totalArea*100:0);
+                        self.shopOption.series[0].data[0].value=self.floorFlashPart.countData.totalNum>0?self.floorFlashPart.countData.totalNum-self.floorFlashPart.countData.signNum:100;
+                        self.shopOption.series[0].data[1].value=self.floorFlashPart.countData.signNum>0?self.floorFlashPart.countData.signNum:0;
+                        self.shopOption.series[0].markPoint.data[0].value=Math.round(self.floorFlashPart.countData.totalNum>0?self.floorFlashPart.countData.signNum/self.floorFlashPart.countData.totalNum*100:0);
+                        self.areaChart.setOption(self.areaOption);
+                        self.shopChart.setOption(self.shopOption);
+                    }else{
+                        alert(data.msg);
+                    }
+                });
+            }
+        },
+        data () {
+            return {
+                newFloorFlash:{},
+                shopOption:{
+                    title:{
+                        show:false
+                    },
+                    series: [
+                        {
+                            name:'商铺入驻率',
+                            type:'pie',
+                            radius: ['70%', '100%'],
+                            avoidLabelOverlap: true,
+                            data:[
+                                {value:100,
+                                    name:'总商铺数',
+                                    itemStyle:{
+                                        normal:{
+                                            color:'#eee'
+                                        }
+                                    }
+                                },
+                                {value:0, name:'签约商铺数',
+                                    itemStyle:{
+                                        normal:{
+                                            color:'#e74c3c'
+                                        }
+                                    }
+                                }
+                            ],
+                            label: {
+                                normal: {
+                                    show: false,
+                                    position: 'center'
+                                }
+                            },
+                            hoverAnimation:false,
+                            markPoint:{
+                                symbol:'circle',
+                                itemStyle:{
+                                    normal:{
+                                        color:'white'
+                                    }
+                                },
+                                label:{
+                                    normal:{
+                                        show:true,
+                                        position:'inside',
+                                        formatter: '{c}%',
+                                        textStyle:{
+                                            color:'black'
+                                        }
+                                    },
+                                },
+                                data:[{name:"签约商铺",x:'50%',y:'50%',value:'0'}],
+                                symbolSize:10
+                            },
+                            legendHoverLink:false
+                        }
+                    ]
+                },
+                areaOption:{
+                    title:{
+                        show:false
+                    },
+                    series: [
+                        {
+                            name:'楼层签约面积率',
+                            type:'pie',
+                            radius: ['70%', '100%'],
+                            avoidLabelOverlap: true,
+                            data:[
+                                {value:100,
+                                    name:'总面积',
+                                    itemStyle:{
+                                        normal:{
+                                            color:'#eee'
+                                        }
+                                    }
+                                },
+                                {value:0, name:'签约面积',
+                                    itemStyle:{
+                                        normal:{
+                                            color:'#ffa900'
+                                        }
+                                    }
+                                }
+                            ],
+                            label: {
+                                normal: {
+                                    show: false,
+                                    position: 'center'
+                                }
+                            },
+                            hoverAnimation:false,
+                            markPoint:{
+                                symbol:'circle',
+                                itemStyle:{
+                                    normal:{
+                                        color:'white'
+                                    }
+                                },
+                                label:{
+                                    normal:{
+                                        show:true,
+                                        position:'inside',
+                                        formatter: '{c}%',
+                                        textStyle:{
+                                            color:'black'
+                                        }
+                                    },
+                                },
+                                data:[{name:"签约面积",x:'50%',y:'50%',value:'0'}],
+                                symbolSize:10
+                            },
+                            legendHoverLink:false
+                        }
+                    ]
+                },
+                areaChart:{},
+                shopChart:{},
+                showFloorFlash:true
+            }
+        }
+    }
+
+</script>

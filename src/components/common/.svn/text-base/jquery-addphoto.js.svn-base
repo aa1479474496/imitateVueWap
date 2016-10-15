@@ -1,0 +1,109 @@
+;
+$(function() {
+	$.fn.extend({
+		addPhotos: function(ajaxUrl) {
+			$(this).on("change", function() {
+				var form;
+				var _this = $(this);
+				var $total = _this.attr("total"); //上传图片数量
+				var $width = _this.attr("w"); //上传图片宽度
+				var $height = _this.attr("h"); //上传图片高度
+				//	var $kb = Number(_this.attr("kb"));
+				var $id = _this.attr("id"); //file对象id
+				var fileObj = document.getElementById($id).files;
+				var viewBoxNums = _this.parent(".listImg").siblings(".addPhotoViewBox").length;
+				
+				function append(srcPath) {
+					var str = '';
+					str += '<div class="addPhotoViewBox">' + "<input name='" + $id + "' class='inputFileAdd' type='hidden' value=' " + srcPath + " ' />" + '<img width="' + $width + '" height="' + $height + '" src=""/>' + '<s class=remove >删除</s></div>'
+					_this.parent(".listImg").before(str);
+					_this.parent(".listImg").parents(".line").find(".remove").on("click",function() {
+						var _self = $(this);
+						_self.parents(".addPhotoViewBox").siblings(".listImg").show();
+						_self.parents(".addPhotoViewBox").remove();
+						return false;
+					});
+					var viewBoxNums = _this.parent(".listImg").siblings(".addPhotoViewBox").length;
+					if (viewBoxNums >= $total) {
+						_this.parent(".listImg").hide();
+					}
+				}
+
+				function addViewBox(srcPath,index,num) {
+					if (fileObj) {
+						var flag = /^image\/[png|jpeg]/.test(fileObj[index].type);
+						if (flag) {
+							var render = new FileReader();
+							render.num = num;
+							render.readAsDataURL(fileObj[index]);
+							render.onload = function() {
+								var _that = this;
+								_this.parents(".line").find("img").eq(_that.num).attr("src",_that.result);
+								_this.val('');
+							}
+						}
+					}
+				}
+
+				form = new FormData();
+				var fileLength = fileObj.length;
+				for (var i = 0; i < fileLength; i++) {
+					if ((viewBoxNums + fileLength) > $total) {
+						alert("上传图片总数请不要超过" + $total + "张" + ",你还可以上传" + Math.abs(viewBoxNums - $total) + "张");
+						return;
+					}
+					form.append("file" + Math.random(), fileObj[i]);
+				}
+//				var xhr = new XMLHttpRequest();
+//				xhr.onreadystatechange = function() {
+//					if (xhr.readyState == 4 && xhr.status == 200) {
+//						var xmlDoc = eval('(' + xhr.responseText + ')');
+//						console.log(xmlDoc);
+//						if (xmlDoc.success == true) {
+//							var srcPath = xmlDoc.result;
+//							var srcPathLength = srcPath.length;
+//							var len = _this.parents(".line").find("img").length;
+//							for (var i = 0; i < srcPathLength; i++) {
+//								append(srcPath[i].filePath);
+//							}
+//							for(var i = 0; i < srcPathLength;i++){
+//								addViewBox(srcPath[i].filePath,i,i+Number(len));
+//							}
+//
+//						} else {
+//							alert(xmlDoc.msg);
+//						}
+//					}
+//				}
+//				xhr.open("post", ajaxUrl, false);
+//				xhr.send(form);
+				
+				$.ajax({
+					url: ajaxUrl,
+					data: form,
+					type: "POST",
+					async:false,
+					datatype:"json",
+					processData: false, 
+  					contentType: false, 
+					success:function(data){
+						if(data.success == true){
+							var srcPath = data.result;
+							var srcPathLength = srcPath.length;
+							var len = _this.parents(".line").find("img").length;
+							for (var i = 0; i < srcPathLength; i++) {
+								append(srcPath[i].filePath);
+							}
+							for(var i = 0; i < srcPathLength;i++){
+								addViewBox(srcPath[i].filePath,i,i+Number(len));
+							}
+						}
+						else{
+							alert(data.msg);
+						}
+            		}
+				});
+			});
+		}
+	});
+});

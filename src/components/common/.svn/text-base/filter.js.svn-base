@@ -1,0 +1,381 @@
+//时间格式化
+var moment = require('moment');
+
+Vue.filter('dateAccurateToMS', function (value) {
+	if(value){
+		return moment(value).format('YYYY-MM-DD HH:mm:ss');
+	}else{
+		return "";
+	}
+});
+
+Vue.filter('date', function (value,type) {
+if(null != value && '' != value){
+	var date = new Date(value);	
+	if('yyyy-MM-dd' == type){
+		 return moment(date).format('YYYY-MM-DD');
+	}else if('yyyy/MM/dd' == type){
+		 return moment(date).format('YYYY/MM/DD');
+	}else if('yyyy-MM-dd hh:mm:ss' == type){
+		 return moment(date).format('YYYY-MM-DD HH:mm:ss'); 
+	}else if('yyyy' == type){
+		 return moment(date).format('YYYY'); 
+	}else{
+		 return moment(date).format('YYYY-MM-DD');
+	}
+}else{
+	return "";
+}
+});
+
+//时间格式化--双向绑定
+Vue.filter('dateSync',{	
+	read: function(value,type) {
+		if(null != value && '' != value){
+			var date = new Date(value);	
+			if('yyyy-MM-dd' == type){
+				 return moment(date).format('YYYY-MM-DD');
+			}else if('yyyy/MM/dd' == type){
+				 return moment(date).format('YYYY/MM/DD');
+			}else if('yyyy-MM-dd hh:mm:ss' == type){
+				 return moment(date).format('YYYY-MM-DD HH:mm:ss'); 
+			}else if('yyyy' == type){
+				 return moment(date).format('YYYY'); 
+			}else{
+				 return moment(date).format('YYYY-MM-DD');
+			}
+		}else{
+			return '';
+		}
+		 
+    },
+    write: function(value, oldValue) {    	
+    	 return value;
+    }
+});
+
+
+//商铺状态字典
+Vue.filter('shopStatus', function (value) {
+	if(null != value){
+		if(0 == value){
+			 return '满铺';
+		}else if(1 == value){
+			return '空铺';
+		}else if(2 == value){
+			return '停租';
+		}
+	}
+	});
+
+//租金类型
+Vue.filter('costType', function (value) {
+	if(null != value){
+		if(1 == value){
+			 return '固定租金';
+		}else if(2 == value){
+			return '提成';
+		}
+	}
+	});
+
+//租金类型
+Vue.filter('publicStatus', function (value) {
+	if(null != value){
+		if(0 == value){
+			 return '未审核';
+		}else if(1 == value){
+			return '提交待审核';
+		}else if(2 == value){
+			return '审核通过';
+		}else if(3 == value){
+			return '审核不通过';
+		}else if(4 == value){
+			return '停止出租';
+		}
+	}
+	});
+//过滤手机号或者身份证号码
+Vue.filter('formatMobile',function(value){
+	if(null != value){
+		if(value.length == 11){
+			return value.substring(0,3)+"****"+value.substring(7,11);
+		}else if(value.length > 11){
+			return value.substring(0,4)+"**********"+value.substring(value.length-4,value.length);
+		}
+	}
+});
+//显示男女
+Vue.filter("formatSex",function(value){
+	if(null != value){
+		if(value==1){
+			return "男";
+		}else{
+			return "女";
+		}
+	}
+});
+//显示婚姻状况
+Vue.filter("formatMarry",function(value){
+	if(null != value){
+		if(value==1){
+			return "未婚";
+		}else if(value==2){
+			return "已婚";
+		}else if(value==3){
+			return "离异";
+		}else if(value==4){
+			return "丧偶";
+		}else if(value==5){
+			return "未知";
+		}
+	}
+});
+//选择框默认值
+Vue.filter("formatSelect",function(value){
+	if(null == value || value == ""){
+		return "请选择";
+	}else{
+		return value;
+	}
+});
+
+//计算百分比
+Vue.filter("computePercent",function(numerator,denominator){
+	if(null != denominator && denominator != "" && numerator !=null && denominator!=''){
+		return (100*numerator/denominator).toFixed(0);
+	}
+});
+
+//用户组，职位超级权限
+Vue.filter("privlege",function(value){
+	if(value==null||value==""){
+		return "超级权限";
+	}else{
+		return value;
+	}
+});
+
+//行业
+Vue.filter("businesstype",function(value,list){
+	if(value !=null && null !=list && list.length >0){
+		var businesstypeName = '';
+		var businesstypeList = value.split('|');
+		for(var index in businesstypeList){
+			for(var item in list){
+				if(list[item].businesstypeCode == businesstypeList[index]){
+					businesstypeName = businesstypeName+list[item].businesstypeName+',';
+					break;
+				}
+			}
+		}
+		return businesstypeName.substring(0, businesstypeName.length - 1);
+	}
+});
+
+//闪铺类型
+Vue.filter("storeBusinesstype",function(value,list){
+	if(value !=null && null !=list && list.length >0){
+		var storeBusinesstypeName = '';
+		var storeBusinesstypeList = value.split(',');
+		for(var index in storeBusinesstypeList){
+			for(var item in list){
+				if(list[item].storeBusinesstypeCode == storeBusinesstypeList[index]){
+					storeBusinesstypeName = storeBusinesstypeName+list[item].storeBusinesstypeName+',';
+					break;
+				}
+			}
+		}
+		return storeBusinesstypeName.substring(0, storeBusinesstypeName.length - 1);
+	}
+});
+
+//闪铺类型
+Vue.filter("mallkindFilter",function(value,list){
+	if(value !=null && null !=list && list.length >0){
+		var mallkindName = '';
+		var mallkindCodeList = value.split(',');
+		for(var index in mallkindCodeList){
+			for(var item in list){
+				if(list[item].mallkindCode == mallkindCodeList[index]){
+					mallkindName = mallkindName+list[item].mallkindName+',';
+					break;
+				}
+			}
+		}
+		return mallkindName.substring(0, mallkindName.length - 1);
+	}
+});
+
+//场地类型
+Vue.filter("storeAreaKindFilter",function(value,list){
+	if(value && null !=list && list.length >0){
+		var areakindName = '';
+		var areakindIdList = value.split(',');
+		for(var index in areakindIdList){
+			for(var item in list){
+				if(list[item].areakindId == areakindIdList[index]){
+					areakindName = areakindName+list[item].areakindName+',';
+					break;
+				}
+			}
+		}
+		return areakindName.substring(0, areakindName.length - 1);
+	}
+});
+
+//闪铺类型
+Vue.filter('storeBusinesstypeTwoWay',{	
+	read: function(value,list) {
+		if(value !=null && null !=list && list.length >0){
+			var storeBusinesstypeName = '';
+			var storeBusinesstypeList = value.split(',');
+			for(var index in storeBusinesstypeList){
+				for(var item in list){
+					if(list[item].storeBusinesstypeCode == storeBusinesstypeList[index]){
+						storeBusinesstypeName = storeBusinesstypeName+list[item].storeBusinesstypeName+',';
+						break;
+					}
+				}
+			}
+			return storeBusinesstypeName.substring(0, storeBusinesstypeName.length - 1);
+		} 
+    },
+    write: function(value, oldValue) {    	
+    	 return value;
+    }
+});
+
+//行业
+Vue.filter("floorRecommend",function(value,list){
+	if(value !=null && value !='' && null !=list && list.length >0){
+		var shopName = '';
+		var shopList = value.split(',');
+		for(var index in shopList){
+			for(var item in list){
+				if(list[item].shopCode == shopList[index]){
+                    shopName = shopName+list[item].shopName+"-"+list[item].shopNo+',';
+					break;
+				}
+			}
+		}
+		return shopName.substring(0, shopName.length - 1);
+	}
+});
+//是否试营业
+Vue.filter('isTry', function (value) {
+        if(null != value){
+            if(0 == value){
+                return '试营业';
+            }else if(1 == value){
+                return '正式营业';
+            }
+        }
+});
+
+//过滤特殊字符
+Vue.filter('filterSpecialChar',{	
+	read: function(value) {
+		if(null != value){
+    		value = $.trim(value);
+    		value=value.replace(/[^\u4e00-\u9fa5\w]/g,'');
+    		return value;
+    	}else{
+    		return '';
+    	}
+		 
+    },
+    write: function(value, oldValue) {    	
+    	 return value;
+    }
+});
+
+
+//是否为户外闪铺
+Vue.filter('isOut', function (value) {
+    if(null != value){
+        if(1 == value){
+            return '是';
+        }else if(0 == value){
+            return '否';
+        }
+    }
+});
+
+//sum array list
+Vue.filter('sum', function (value) {
+	if(Object.prototype.toString.call(value) === '[object Array]'){
+		var temp=0;
+		value.forEach(function (e) {
+			temp+=e;
+		});
+		return temp
+	}else{
+		return value
+	}
+});
+
+//意向百分比
+Vue.filter('percentSplit', function (value) {
+	if(null != value && '' != value){
+		var values = value.split(",");
+		var begin = (Number(values[0]) * 100) + "%";
+		var end = (Number(values[values.length-1]) * 100) + "%";
+		return begin == end ? begin : begin+"-"+end;
+	}else{
+		return "0%";
+	}
+});
+//取消小数后边的零
+Vue.filter('parseFloat', function (value) {
+	if(null != value && '' != value){
+		return parseFloat(value);
+	}else{
+		return "";
+	}
+});
+
+
+Vue.filter("storeSizeFilter", {
+    read: function (value,number,realvalue) { // model -> view 在更新 `<input>` 元素之前格式化值
+    	if(value && value.indexOf('×') >= 0){
+    		if(1 == number){
+        		return value.split('×')[0];
+        	}else if(2 == number){
+        		return value.split('×')[1];
+        	}else{
+        		return value.split('×')[2];
+        	}
+    	}
+    	
+        return value;
+    },
+    write: function (newVal,oldVal,number,realvalue) { // view -> model  在写回数据之前格式化值
+    	var length,width,height;
+    	if(realvalue){
+    		length = realvalue.split('×')[0];
+    		width = realvalue.split('×')[1];
+    		height = realvalue.split('×')[2];
+    	}
+        if(1 == number){
+        	length = newVal;
+    	}else if(2 == number){
+    		width = newVal;
+    	}else{
+    		height = newVal;
+    	}
+        if(!length){
+        	length = '';
+        }
+        if(!width){
+        	width = '';
+        }
+        if(!height){
+        	height = '';
+        }
+        realvalue = length + '×' + width + '×' + height;
+        return realvalue;
+    }
+});
+
+

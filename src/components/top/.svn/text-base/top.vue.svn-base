@@ -1,0 +1,69 @@
+<template>
+    <!--头部-->
+    <div id="header">
+        <div class="logo fl">
+            <a v-link="{name:'home'}"><img src="../../assets/images/logo.png" alt=""></a>
+            <img src="../../assets/images/logo_r.png" alt="">
+            商业地产SAAS项目管理平台<span v-if="auth">（{{staffInfo.sln}}）</span>
+        </div>
+        <div class="fr" v-if="auth">
+            <a @click="_logout()" href="javascript:void(0)"><i class=" i1"></i>退出登录</a>
+            <a class="after a2" v-link="{ path: '/staff/changePassword' }"><i class=" i2"></i>修改密码</a>
+            <a v-link="{ path: '/staff/personalData' }" class="a3"><i class="i3">
+                <img v-if="(!staffInfo.photoPath || staffInfo.photoPath == '')&&staffInfo.sex!=2" width="26px" height="26px" src="../../assets/images/nan.png"/>
+                <img v-if="(!staffInfo.photoPath || staffInfo.photoPath == '')&&staffInfo.sex==2" width="26px" height="26px" src="../../assets/images/nv.png"/>
+                <img v-if="staffInfo.photoPath && staffInfo.photoPath != ''" width="26px" height="26px" :src="staffInfo.photoPath"/>
+            </i>{{staffInfo.nickName}}</a>
+            <a class="time" v-if="staffInfo.lastLoginTime">上次登录时间为：{{staffInfo.lastLoginTime}}</a>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <!--导航-->
+    <div id="topNav" v-if="auth">
+        <!--左导航-->
+        <base-privileges></base-privileges>
+        <!--右消息-->
+        <article-roll-list></article-roll-list>
+    </div>
+
+</template>
+
+
+<script>
+    import {logout} from '../../vuex/actions'
+    import {getAuth} from '../../vuex/getters'
+    import {getStaffInfo} from '../../vuex/getters'
+
+    export default {
+        components: {
+            'base-privileges': require('./basePrivileges.vue'),
+            'article-roll-list': require('./articleRollList.vue')
+        },
+        vuex: {
+            actions: {
+                logout: logout
+            },
+            getters: {
+                auth: getAuth,
+                staffInfo: getStaffInfo
+            }
+        },
+        methods: {
+            _logout: function () {
+                var vue = this;
+                vue.$resource('/erpServer/innerAuth/logout').save()
+                        .then(function () {
+                            $.cookie('staffInfo', null, {expires: -1, path: '/'});
+                            vue.logout();
+                            vue.$route.router.go({name: 'login'});
+                        }, function () {
+                            $.cookie('staffInfo', null, {expires: -1, path: '/'});
+                            vue.logout();
+                            vue.$route.router.go({name: 'login'});
+                        });
+            }
+        }
+    }
+
+
+</script>

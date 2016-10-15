@@ -1,0 +1,53 @@
+<template>
+    <div id="msg">
+        <div class="horn"></div>
+        <div class="panel ">
+            <div class="col-xs-12" style="background:white;padding: 0;">
+                <ul class="demo1" style="overflow: hidden !important;">
+                    <li class="news-item" v-for="a in articles">
+                        <a v-link="{ path: '/article/list', query: { articleId: a.articleId }}" style="color: #666;">
+                            <span>{{a.title}}</span>
+                            <ins>{{a.crtTime | date 'yyyy/MM/dd'}}</ins>
+                        </a>
+                        <a v-link="{ path: '/article/list' }">更多&gt;&gt;</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    require('../common/filter.js')
+    require('../../assets/js/jquery.bootstrap.newsbox.min.js')
+    export default {
+        ready: function () {
+            this._getArticleRollList();
+        },
+        data() {
+            return {
+                articles: []
+            }
+        },
+        methods: {
+            _getArticleRollList: function () {
+                var vue = this;
+                vue.$resource('/erpServer/article/info/rollList').get()
+                        .then(function (response) {
+                            if (response.data.success) {
+                                vue.articles = response.data.result;
+                                vue.$nextTick(function () {
+                                    $(".demo1").bootstrapNews({
+                                        newsPerPage: 1,
+                                        autoplay: true,
+                                        pauseOnHover: true,
+                                        direction: 'up',
+                                        newsTickerInterval: 3000
+                                    });
+                                });
+                            }
+                        });
+            }
+        }
+    }
+</script>

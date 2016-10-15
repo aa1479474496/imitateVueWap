@@ -1,0 +1,61 @@
+<template>
+    <div class="nav">
+        <div class="now" v-for="p in basePrivileges" v-if="p.privilegeCode==mainMenuCode"><a href="javascript:void(0)"><i :class="p.privilegeCode"></i>{{p.menuName}}</a></div>
+        <div class="now" v-if="mainMenuCode==''"><a v-link="{name:'home'}"><i class="i1"></i>首页</a></div>
+        <div class="sub">
+            <a v-link="{ path: '/' }" v-if="mainMenuCode!=''"><i class="i1"></i>首页</a>
+        <span v-for="p in basePrivileges">
+            <a v-link="{ path: '/staff/personalData' }" v-if="p.privilegeCode=='staff_manager'&&mainMenuCode!=p.privilegeCode"><i :class="p.privilegeCode"></i>{{p.menuName}}</a>
+            <a href="javascript:void(0)" @click="_gotoSubPrivileges($event.target)" v-privilege="p.privilegeCode" v-if="p.privilegeCode!='staff_manager'&&mainMenuCode!=p.privilegeCode">
+                <input type="hidden" v-for="ps in p.nodes" v-privilege="ps.privilegeCode" :value="ps.url" v-if="p.privilegeCode!='staff_manager'&&mainMenuCode!=p.privilegeCode">
+                <i :class="p.privilegeCode"></i>{{p.menuName}}</a>
+        </span>
+        </div>
+    </div>
+</template>
+
+<script>
+    import {staffPrivileges} from '../../vuex/actions'
+    import {ownerPrivileges} from '../../vuex/actions'
+    import {getPrivileges} from '../../vuex/actions'
+    import {getMainMenuCode} from '../../vuex/getters'
+
+    export default {
+        vuex: {
+            actions: {
+                staffPrivileges: staffPrivileges,
+                ownerPrivileges: ownerPrivileges,
+                getPrivileges: getPrivileges
+            },
+            getters: {
+                mainMenuCode: getMainMenuCode
+            }
+        },
+        data () {
+            return {
+                basePrivileges: []
+            }
+        },
+        ready () {
+            this.getPrivileges(this._getBasePrivileges());
+        },
+        methods: {
+            _getBasePrivileges: function () {
+                var vue = this;
+                return $.post("/erpServer/home/privilege/getPrivileges", {}, function (response) {
+                    vue.basePrivileges = response.result.BasePrivileges;
+                    vue.ownerPrivileges(response.result.OwnerPrivileges);
+                    vue.staffPrivileges(response.result.StaffPrivileges);
+                    $('#topNav .nav').hover(function () {
+                        $('.sub').stop().fadeIn();
+                    }, function () {
+                        $('.sub').stop().fadeOut();
+                    });
+                }).promise();
+            },
+            _gotoSubPrivileges: function (e) {
+                this.$route.router.go($($(e).find("input:hidden")[0]).val());
+            }
+        }
+    }
+</script>

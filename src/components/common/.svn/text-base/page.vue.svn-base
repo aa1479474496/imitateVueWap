@@ -1,0 +1,85 @@
+<template>
+  <div class="tdStrip fl">每页显示
+      <input type="text" id="pageSizeNumber" style="height:26px;padding-top:0px;padding-bottom:0px;" maxlength="2"  class="number form-control" v-model="condition.pageSize">条记录
+	  <button type="button" @click="getListByCondition()">确定</button>
+  </div>
+  <ul class="pagination pagination-md pull-right ">
+    <li class="disabled" ><a>共<i>{{ page.totalCount }}</i>条</a></li>
+    <li v-if="this.page.pageNo>1" ><a @click="prePage()">上一页</a></li>
+    <li v-else class="disabled"><a>上一页</a></li>
+    <li v-for="index in indexs"  v-bind:class="{'active': page.pageNo === index }">
+      <a @click="pageClick(index)">{{ index }}</a>
+    </li>
+    <li v-if="this.page.pageNo != this.page.totalPages" ><a @click="nextPage()">下一页</a></li>
+    <li v-else class="disabled"><a>下一页</a></li>
+    <li class="disabled"><a>共<i>{{ page.totalPages }}</i>页</a></li>
+  </ul>
+</template>
+
+<script>
+  module.exports = {
+    props: {
+    	page : Object,
+    	condition : Object,
+    	search:null
+    },
+    computed: {
+      indexs: function(){
+        var left = 1;
+        var right = this.page.totalPages;
+        var ar = [];
+        if(this.page.totalPages>= 7){
+          if(this.page.pageNo > 5 && this.page.pageNo < this.page.totalPages-4){
+            left = this.page.pageNo - 3;
+            right = this.page.pageNo + 3;
+          }else{
+            if(this.page.pageNo<=5){
+              left = 1;
+              right = 7;
+            }else{
+              right = this.page.totalPages;
+              left = this.page.totalPages - 6;
+            }
+          }
+        }
+        while (left <= right){        
+          ar.push(left);
+          left ++;
+        }
+        return ar;  
+      },
+    },
+    methods:{
+    	getList:function(){
+    		this.$parent[this.search]();
+    	},
+    	prePage:function(){
+    		this.page.pageNo--;
+    		this.condition.pageNo--;
+    		this.getList();
+    	},
+    	nextPage:function(){
+    		this.page.pageNo++;
+    		this.condition.pageNo++;
+    		this.getList();
+    	},
+    	pageClick:function(index){
+    		if(this.condition.pageNo != index){
+    			this.page.pageNo = index;
+        		this.condition.pageNo = index;
+        		this.getList();
+    		}
+    	},
+    	getListByCondition:function(){
+    		var ptn = /^[0-9]*[1-9][0-9]*$/;
+    		var flag = $("#pageSizeNumber").val().trim().match(ptn);
+    		if(flag == null){return false;}
+    		this.page.pageNo=1;
+    		this.condition.pageNo=1;
+    		this.getList();
+    	}
+    	
+    }
+
+  };
+</script>

@@ -1,0 +1,42 @@
+Vue.directive('privilege', function (value) {
+    var vue = this
+    if (vue.vm.$store.state.auth) {
+        if (!vue.vm.$store.state.getPrivileges)
+            setTimeout(function () {
+                vue.vm.$store.state.getPrivileges.then(function () {
+                    var os = vue.vm.$store.state.ownerPrivileges
+                    var s = vue.vm.$store.state.staffPrivileges
+                    if ((os != '_ALL' && (os == null || os == '' || (',' + os + ',').indexOf(',' + value + ',') == -1)) || (vue.vm.$store.state.staffInfo.positionId != -1 && s != '_ALL' && (s == null || s == '' || (',' + s + ',').indexOf(',' + value + ',') == -1)))
+                        $(vue.el).remove()
+                })
+            }, 100)
+        else
+            vue.vm.$store.state.getPrivileges.then(function () {
+                var os = vue.vm.$store.state.ownerPrivileges
+                var s = vue.vm.$store.state.staffPrivileges
+                if ((os != '_ALL' && (os == null || os == '' || (',' + os + ',').indexOf(',' + value + ',') == -1)) || (vue.vm.$store.state.staffInfo.positionId != -1 && s != '_ALL' && (s == null || s == '' || (',' + s + ',').indexOf(',' + value + ',') == -1)))
+                    $(vue.el).remove()
+            })
+    }
+})
+
+Vue.directive('businessTypeBackgroundColor', function (value) {
+    var vue = this
+    switch (value) {
+        case '娱乐':
+            $(vue.el).addClass("bac53B");
+            break;
+        case '儿童':
+            $(vue.el).addClass("bacFFC539");
+            break;
+        case '零售':
+            $(vue.el).addClass("bacFF5978");
+            break;
+        case '餐饮':
+            $(vue.el).addClass("bacFE7328");
+            break;
+        case '服务':
+            $(vue.el).addClass("bac7ACC5A");
+            break;
+    }
+})

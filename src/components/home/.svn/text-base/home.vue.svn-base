@@ -1,0 +1,226 @@
+<template>
+    <div class="index">
+        <div class="section section1 box-show" id="StaffShortcut">
+            <h3>快捷功能展示
+                <!--<i @click="_stickyThis" class="top" data-toggle="tooltip" data-placement="top" title="置顶"></i>-->
+            </h3>
+            <div class="p50 clearfix">
+                <a href="javascript:void(0)" v-for="(index,sc) in staffShortcuts" v-privilege="sc.privilegeCode">
+                    <div class="cen_cell" @click="goto(sc.url)">
+                        <img v-if="sc.shortcutIcon&&sc.shortcutIcon!=''" v-bind:src="sc.shortcutIcon" alt="">
+                        <img v-else src="../../assets/images/apng1.jpg" alt="">
+                    </div>
+                    <span @click="goto(sc.url)">{{sc.menuName}}</span>
+                    <i class="close" @click="deleteShortcut(index,sc.privilegeCode)"></i>
+                </a>
+                <a href="javascript:void(0)" @click="_showUpdateStaffShortCut" class="add">
+                    <div class="cen_cell">
+                        <img src="../../assets/images/aadd.jpg" alt="">
+                    </div>
+                    <span>点击添加</span>
+                </a>
+            </div>
+        </div>
+        <part-floorflash v-if="floorFlashPart.isShow" :floor-flash-part="floorFlashPart"></part-floorflash>
+        <div class="modal  bs-example-modal-lg " tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="updateShortcut">
+            <div class="index" >
+                <div class="modelTitle">
+                    <div class="close" data-dismiss="modal">
+                        X
+                    </div>
+                </div>
+                <div class="section section3 box-show">
+                    <div class="title">快捷功能菜单设置</div>
+                    <div class="p50" style="width:100%;">
+                        <div class="line"></div>
+                        <div class="context" id="shortcutChoice">
+                            <div class="dk clearfix" v-for="bp in baseAndSubPrivileges" v-privilege="bp.privilegeCode">
+                                <div class="inbtn" id="ms_{{bp.privilegeCode}}" class="off" @click="_choiceAllSubShortCut($event)">{{bp.menuName}}</div>
+                                <!--<input v-for="sp in bp.nodes" id="check_ms_{{bp.privilegeCode}}" style="display: none" type="checkbox" value="{{bp.privilegeCode}}" v-model="checkedNames">-->
+                                —
+                                <ul>
+                                    <li v-for="sp in bp.nodes" v-privilege="sp.privilegeCode" id="mls_{{sp.privilegeCode}}" @click="_choiceShortCut($event)" class="off">{{sp.menuName}}</li>
+                                    <input v-for="sp in bp.nodes" id="check_mls_{{sp.privilegeCode}}" style="display: none" type="checkbox" value="{{sp.privilegeCode}}" v-model="checkedNames">
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="bot clearfix">
+                            <a href="javascript:void(0)" @click="_hideModal()">取消</a>
+                            <a class="defaultSave" href="javascript:void(0)" @click="_updateStaffShortCut">确定</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    import {staffShortcut} from '../../vuex/actions'
+    import {getStaffShortcut} from '../../vuex/getters'
+    import {mainMenuCode} from '../../vuex/actions'
+
+    export default {
+        vuex: {
+            actions: {
+                staffShortcut: staffShortcut,
+                mainMenuCode: mainMenuCode
+            },
+            getters: {
+                getStaffShortcut: getStaffShortcut
+            }
+        },
+        components: { //引入组件
+            'part-floorflash': require('./floorFlashPart.vue')
+        },
+        ready: function () {
+            this.mainMenuCode('');
+            $('.index').children().eq(0).find('h3 i').hide();
+
+            if (!this.getStaffShortcut.ss)
+                this._getStaffShortcut();
+            else {
+                this.staffShortcuts = this.getStaffShortcut.ss;
+                this.staffShortcutsString = this.getStaffShortcut.sss;
+            }
+            this.getFloorFlashPart();
+        },
+        data () {
+            return {
+                baseAndSubPrivileges: [],
+                staffShortcuts: [],
+                staffShortcutsString: [],
+                checkedNames: [],
+                floorFlashPart:{isShow:false,malls:[],buildingzones:[],floors:[],countData:{},floorFlash:{}}
+            }
+        },
+        methods: {
+            _getStaffShortcut: function () {
+                var vue = this;
+                return vue.$resource('/erpServer/home/privilege/getStaffShortcut').save().then(function (response) {
+                    vue.staffShortcuts = response.data.result.ss;
+                    if (response.data.result.sss && response.data.result.sss.length > 0) {
+                        response.data.result.sss = $.parseJSON(response.data.result.sss);
+                    } else {
+                        response.data.result.sss = []
+                    }
+                    vue.staffShortcutsString = response.data.result.sss;
+                    vue.staffShortcut(response.data.result);
+                });
+            },
+            _getBaseAndSubPrivileges: function () {
+                var vue = this;
+                return vue.$resource('/erpServer/home/privilege/getBaseAndSubPrivileges').save().then(function (response) {
+                    vue.baseAndSubPrivileges = response.data.result
+                });
+            },
+            _choiceShortCut: function (e) {
+                var el = e.target;
+                $("#check_" + el.id).click();
+                $(el).hasClass('on') ? $(el).removeClass('on').addClass('off') : $(el).removeClass('off').addClass('on');
+                if ($(el).parent().find('.off').length==0){
+                    $(el).parent().siblings('div').removeClass('off').addClass('on');
+                }else{
+                    $(el).parent().siblings('div').removeClass('on').addClass('off');
+                }
+            },
+            _choiceAllSubShortCut:function (e) {
+                var el = e.target;
+                $("#check_" + el.id).click();
+                var dk_li=$(el).siblings('ul').find('li');
+                if($(el).hasClass('on')){
+                    $(el).removeClass('on').addClass('off');
+                    $(el).siblings('ul').find('.on').click();
+                }else {
+                    $(el).removeClass('off').addClass('on');
+                    $(el).siblings('ul').find('.off').click();
+                }
+            },
+            _updateStaffShortCut: function () {
+                var vue = this;
+                vue.$resource('/erpServer/home/privilege/updateStaffShortCut').update({shortcut: JSON.stringify(vue.checkedNames)}).then(function (response) {
+                    vue._getStaffShortcut();
+                    this._hideModal();
+                });
+            },
+            _showUpdateStaffShortCut: function () {
+                var vue = this;
+                $(".bs-example-modal-lg").modal({
+                    show: true
+                });
+                vue.baseAndSubPrivileges=[];
+                this._getBaseAndSubPrivileges().then(function () {
+                    for (var i = 0; i < 10; i++) {
+                        var dki = $('.section3 .dk').eq(i);
+                        dki.css('height', dki.find('ul').height() + 18);
+                    }
+                    //给LI增加高度
+                    var sh = $('.p50 .context').height() - $('.p50 .context .dk:last-child').height() - 22;
+                    $('.p50 .line').css('height', sh);
+
+                    vue.checkedNames= new Array(0);
+                    vue.checkedNames= vue.checkedNames.concat(vue.staffShortcutsString);
+                    $(vue.staffShortcutsString).each(function (i, e) {
+                        if ($("#ms_" + e).length > 0)
+                            $("#ms_" + e).removeClass('off').addClass('on');
+                        if ($("#mls_" + e).length > 0)
+                            $("#mls_" + e).removeClass('off').addClass('on');
+                    });
+
+                    $("#shortcutChoice").find("div").find("ul").each(function (i,e) {
+                        if ($(e).find('.off').length==0){
+                            $(e).siblings('div').removeClass('off').addClass('on');
+                        }else{
+                            $(e).siblings('div').removeClass('on').addClass('off');
+                        }
+                    });
+                });
+            },
+            goto: function (url) {
+                this.$route.router.go(url);
+            },
+            deleteShortcut: function (index, code) {
+                var vue = this;
+                vue.staffShortcuts.splice(index, 1);
+                console.log();
+                $(vue.staffShortcutsString).each(function (i, e) {
+                    if (e == code) {
+                        vue.staffShortcutsString.splice(i, 1);
+                    }
+                });
+
+                vue.staffShortcut({ss: vue.staffShortcuts, sss: vue.staffShortcutsString});
+
+                vue.$resource('/erpServer/home/privilege/updateStaffShortCut').update({shortcut: JSON.stringify(vue.staffShortcutsString)}).then(function (response) {});
+            },
+//            _stickyThis: function beforeNode(){
+//                $("body").scrollTop(0);
+//                var $index=$('.index');
+//                var index_node1=$index.children().eq(0);
+//                var index_node2=$index.children().eq(1);
+//                index_node1.before(index_node2);
+//                $index.children().eq(0).find('h3 i').hide();
+//                $index.children().eq(1).find('h3 i').show();
+//            },
+            _hideModal:function () {
+                $('.bs-example-modal-lg').modal('hide')
+            },
+            getFloorFlashPart:function(){
+                var self = this;
+                $.ajax({
+                    url: '/erpServer/floor/flash/homepart',
+                    data:{},
+                    type: 'GET',
+                    dataType: 'json',
+                    contentType:"application/json"
+                }).done(function (data) {
+                    if(data.success){
+                        self.floorFlashPart = data.result;
+                    }else{
+                        self.floorFlashPart.isShow=false;
+                    }
+                });
+            }
+        }
+    }
+</script>

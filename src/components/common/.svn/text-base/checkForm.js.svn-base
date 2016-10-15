@@ -1,0 +1,112 @@
+module.exports = function() {
+
+	return {
+
+		checkForm: function(obj) {
+			var flag = true;
+			//输入框验证 requiredInput为必填项，非必填项为空的不验证，不为空则验证
+			function isFlag($ele) {
+				var $val = $ele.val().trim();
+				var ptn = $ele.attr('ptn');
+				if($ele.hasClass("no-focus")&&!$ele.hasClass("input-date")){
+					$ele.parents(".focus-wrap").removeClass('sucessField');
+				}
+				else{
+					$ele.removeClass('sucessField');
+				}
+				
+				if ($val == '') {
+					if ($ele.hasClass("requiredInput")) {
+							if($ele.hasClass("no-focus")&&!$ele.hasClass("input-date")){
+								$ele.parents(".focus-wrap").removeClass('sucessField').addClass('warnField');
+							}
+							else{
+								$ele.removeClass('sucessField').addClass('warnField');
+							}
+						flag = false;
+					}
+				} else {
+					if ($val.match(eval(ptn)) == null) {
+						if($ele.hasClass("no-focus")){
+							 $ele.parents(".focus-wrap").removeClass('sucessField').addClass('warnField');
+						}
+						else{
+							$ele.removeClass('sucessField').addClass('warnField');
+						}
+						flag = false;
+					}
+					else{
+						$ele.removeClass('warnField');
+					}
+				}
+			}
+			var o = obj.find("input[type=text],input[type=password],textarea");
+			o.each(function() {
+				isFlag($(this));
+			});
+			//下拉菜单验证
+			var dropdown = obj.find('.dropdown-toggle.requiredDropdown').not("#selectBrand");
+			if (dropdown && dropdown.length > 0) {
+				dropdown.each(function() {
+					var $text = $(this).find("span").text().trim();
+					if (($text == '') || ($text == '请选择')) {
+						$(this).addClass("warnField");
+						flag = false;
+					} else {
+						$(this).removeClass("sucessField");
+					}
+				})
+			};
+			
+			//招商意向度90%，签约铺位验证
+			var requiredIns = obj.find('.requiredIns');
+			if (requiredIns && requiredIns.length > 0) {
+				requiredIns.each(function(){
+					var $text = $(this).find("ins").text().trim();
+//					console.log($text);
+					if($text == ''){
+						$(this).parent(".choiceResult").addClass("warnField");
+						flag = false;
+					}else {
+						$(this).parent(".choiceResult").removeClass("warnField");
+					}
+				});
+			}
+
+			//入职日期与离职日期验证
+			var $entryVal = obj.find(".entry-date");
+			var $dimissionVal = obj.find(".dimission-date");
+			if ($entryVal.val() && $dimissionVal.val()) {
+				var entryDate = new Date($entryVal.val()).getTime();
+				var dimissionDate = new Date($dimissionVal.val()).getTime();
+				if (dimissionDate < entryDate) {
+					$dimissionVal.removeClass("sucessField").addClass('warnField');
+					flag = false;
+				}
+			}
+			
+			//商铺管理 满铺 选择品牌与输入品牌二选一
+			var $selectBrand = obj.find("#selectBrand");
+			var $inputBrand = obj.find("#inputBrand");
+			
+			if($selectBrand.get(0)&& $inputBrand.get(0)){
+				var $selectBrandText = $selectBrand.find("span").text();
+				var $inputBrandVal = $inputBrand.val();
+				
+				if(!$selectBrandText.trim() && !$inputBrandVal.trim()){
+					$selectBrand.removeClass("sucessField").addClass('warnField');
+					$inputBrand.removeClass("sucessField").addClass('warnField');
+					flag = false;
+				}
+			}
+			if($inputBrand.get(0)){
+				var $inputBrandVal = $inputBrand.val();
+				if($inputBrandVal.trim()){
+					$selectBrand.removeClass("warnField");
+				}
+			}
+			return flag;
+		}
+
+	}
+}
