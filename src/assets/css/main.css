@@ -594,10 +594,10 @@ ul.pinxiang-list li img {
     width: 40px;
     height: 40px;
     right: 20px;
-    bottom: 130px;
+    bottom: 10px;
     z-index: 9999;
     border-radius: 50%;
     background: url(../images/newIndex.png) -70px 0 no-repeat;
     background-size: 250px 500px;
-    display: none;
+    /*display: none;*/
 }

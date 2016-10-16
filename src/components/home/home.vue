@@ -148,7 +148,7 @@
 			</p>
 			<!--回到顶部-->
 			<div id="totop" @click="gotopAction"></div>
-
+			<!--<div id="test" style="width:100%;height:40px;font-size:20px;text-align:center;position: fixed;z-index:99999;background:skyblue;top:50%;left:0;">{{total}} ++{{scrollTop}}</div>-->
 		</div>
 
 	</div>
@@ -184,24 +184,41 @@
 //			});
 			$(window).on("scroll", function() {
 				var scrollTop = $(this).scrollTop();
-				var scrollHeight = $(document).height();
-				var windowHeight = $(this).height();
-				if (scrollTop > 100) {
-					$("#totop").fadeIn(200);
-				} else {
-					$("#totop").fadeOut(200);
-				}　
+//				var scrollHeight = $(document).height();
+//				var windowHeight = $(this).height();
+//				if (scrollTop > 100) {
+//					$("#totop").fadeIn(200);
+//				} else {
+//					$("#totop").fadeOut(200);
+//				}　
+//				
+//				var $total = scrollHeight - scrollTop - windowHeight;
+//				self.total = $total;
+//				if ($total < 5) {　
+//					if (!self.hasNext) {　
+//						return;　
+//					}　
+//					self.hasNextFlag = 2;　　　　
+//					self.getStoreListData.pageNo++;
+//					self.getStoreList();　　
+//				}
 				
-				var $total = scrollHeight - scrollTop - windowHeight;
 				
-				if ($total < 2) {　
+				//------
+				 var totalheight = parseFloat($(window).height()) + parseFloat($(window).scrollTop());
+				 self.total = totalheight;
+				 self.scrollTop = scrollTop;
+				 if(totalheight>=($(document).height() -10)){
 					if (!self.hasNext) {　
 						return;　
 					}　
 					self.hasNextFlag = 2;　　　　
 					self.getStoreListData.pageNo++;
-					self.getStoreList();　　
-				}
+					self.getStoreList();　
+	
+	            }
+				
+				
 
 			});
 
@@ -286,6 +303,8 @@
 				storeList: [],
 				hasNext: null,
 				hasNextFlag: null,
+				total:null,
+				scrollTop:null,
 				getStoreListData: {
 					cityCode: '310100',
 					pageNo: 1,
