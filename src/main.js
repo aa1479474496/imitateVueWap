@@ -1,4 +1,6 @@
 //require('./assets/css/bootstrap.min.css')
+require('./assets/css/swiper.min.css')
+require('./assets/js/swiper.min.js')
 require('./assets/css/main.css')
 //require('bootstrap')
 require("jquery.cookie")

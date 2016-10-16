@@ -3,7 +3,7 @@
 		<a href="#">
 			<div class="logo_img"></div>
 		</a>
-		<div class="region" ng-init="cityBoxStatus=false">
+		<div class="region">
 			<div @click="cityBoxStatus=!cityBoxStatus" class="region_on">上海市</div>
 			<ul id="cityLiBox" v-show="cityBoxStatus" @click="cityBoxStatus=!cityBoxStatus">
 				<li v-for="item in items">
@@ -18,6 +18,18 @@
 		</div>
 		<a class="loginBtn" v-link="{path: '/login'}">登录</a>
 		<br style="clear:both;" />
+
+		<!--大焦点图切换-->
+		<div class="swiper-container">
+			<div class="swiper-wrapper">
+				<div class="swiper-slide" v-for="item in focusAd">
+					<a href="{{item.adLink}}">
+						<img v-bind:src="item.adPic" />
+					</a>
+				</div>
+			</div>
+			<div class="swiper-pagination pageState"></div>
+		</div>
 
 		<!--左右滚动切换-->
 		<!--左右滚动-->
@@ -124,6 +136,18 @@
 					</a>
 				</li>
 			</ul>
+			<p class="uploadMore" v-if="hasNextFlag == 1">
+				<i></i>上拉加载更多
+			</p>
+			<p class="uploadIng" v-if="hasNextFlag == 2">
+				<img src="../../assets/images/ajax-loader.gif" width="20" height="20" /> 加载中...
+			</p>
+
+			<p class="uploadNone" v-if="hasNextFlag == 3">
+				<i></i>没有更多数据
+			</p>
+			<!--回到顶部-->
+			<div id="totop" @click="gotopAction"></div>
 
 		</div>
 
@@ -136,18 +160,51 @@
 		components: { //引入组件
 		},
 		ready: function() {
-			this.getFloorFlashPart();
-			this.getStoreList();
+			var self = this;
+			self.getFloorFlashPart();
+			self.getStoreList();
 			var $windowH = $(window).height();
 			var $documentH = $(document).height();
-			
-			// $(document).scroll(function(){
-			// 	var $scrollTop = $(this).scrollTop();
-			// 	var $scrollH = $(this).scrollHeight()
-			// 	var $wTop = $(window).scrollTop();
-			// 	var isEnd = $documentH - $windowH - $scrollTop;
-			// 	console.log($scrollTop,$wTop);
-			// })
+//			$(document).on("scroll", function() {
+//				var $scrollTop = $(this).scrollTop();
+//				if ($scrollTop > 100) {
+//					$("#totop").fadeIn(200);
+//				} else {
+//					$("#totop").fadeOut(200);
+//				}
+//				var $h = $(this).height();
+//				var $total = $h - $scrollTop - $windowH;
+//				console.log($total);
+//				if ($total < 2) {
+//					if (!self.hasNext) return;
+//					self.getStoreListData.pageNo++;
+//					self.hasNextFlag = 2;
+//					self.getStoreList();
+//				}
+//			});
+			$(window).on("scroll", function() {
+				var scrollTop = $(this).scrollTop();
+				var scrollHeight = $(document).height();
+				var windowHeight = $(this).height();
+				if (scrollTop > 100) {
+					$("#totop").fadeIn(200);
+				} else {
+					$("#totop").fadeOut(200);
+				}　
+				
+				var $total = scrollHeight - scrollTop - windowHeight;
+				
+				if ($total < 2) {　
+					if (!self.hasNext) {　
+						return;　
+					}　
+					self.hasNextFlag = 2;　　　　
+					self.getStoreListData.pageNo++;
+					self.getStoreList();　　
+				}
+
+			});
+
 		},
 		methods: {
 			getFloorFlashPart: function() {
@@ -164,18 +221,34 @@
 					self.rightPosition = result.rightPosition;
 					self.rightTime = result.rightTime;
 					self.exhibition = result.exhibition;
-
+					self.focusAd = result.focusAd;
+					//初始化swiper
+					self.$nextTick(function() {
+						var mySwiper = new Swiper('.swiper-container', {
+							autoplay: 1000, //可选选项，自动滑动 
+							loop: true,
+							pagination: '.swiper-pagination',
+							paginationType: 'fraction',
+							autoplayDisableOnInteraction: false,
+						})
+					})
 				});
 			},
 			getStoreList: function() {
 				var self = this;
 				$.ajax({
-					url:'http://m.putiandi.com/appServer/popup/list/query?',
+					url: 'http://m.putiandi.com/appServer/popup/list/query?',
 					data: self.getStoreListData,
 					type: 'GET',
 					dataType: 'json',
-				}).done(function(data){
-					self.storeList = data.result.result;
+				}).done(function(data) {
+					self.hasNext = data.result.hasNext; //判决是否有下一页，返回的是true / false
+					if (self.hasNext) {
+						self.hasNextFlag = 1;
+					} else {
+						self.hasNextFlag = 3;
+					}
+					self.storeList = self.storeList.concat(data.result.result);
 				});
 			},
 			willOpen: function() {
@@ -185,9 +258,13 @@
 					self.willOpenFlag = false;
 				}, 1000);
 			},
-
+			gotopAction: function() {
+				$("html,body").animate({
+					scrollTop: 0
+				}, 0);
+			},
 			changeClass: function(index) {
-				if(index % 2) {
+				if (index % 2) {
 					return false;
 				} else {
 					return true;
@@ -205,8 +282,15 @@
 				rightPosition: null,
 				rightTime: null,
 				exhibition: null,
-				storeList: null,
-				getStoreListData:{cityCode:'310100', pageNo:1, pageSize:10},
+				focusAd: null,
+				storeList: [],
+				hasNext: null,
+				hasNextFlag: null,
+				getStoreListData: {
+					cityCode: '310100',
+					pageNo: 1,
+					pageSize: 10
+				},
 				items: [{
 					cityname: "上海市",
 					cityStatus: 1
