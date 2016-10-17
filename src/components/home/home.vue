@@ -149,6 +149,7 @@
 			<!--回到顶部-->
 		</div>
 		<div id="totop" @click="gotopAction"></div>
+		<div style="position:fixed;top:50%;line-height:40px;background:skyblue;width:100%;font-size:24px;">{{testHeight}}</div>
 	</div>
 </template>
 
@@ -180,6 +181,9 @@
 //					self.getStoreList();
 //				}
 //			});
+
+
+
 			$(window).on("scroll", function() {
 				var scrollTop = $(this).scrollTop();
 //				var scrollHeight = $(document).height();
@@ -206,13 +210,28 @@
 				 var totalheight = parseFloat($(window).height()) + parseFloat($(window).scrollTop());
 				 self.total = totalheight;
 				 self.scrollTop = scrollTop;
+//				 var testHeight = $(document).height() - totalheight;
+//				 self.testHeight = testHeight;
+//				 if(testHeight <= 5){
+//				 	self.testHeight = $(document).height() - totalheight;
+//				 	console.log(testHeight);
+//				 	
+//				 }
+				 
 				 if(totalheight>=($(document).height() -10)){
-					if (!self.hasNext) {　
+				 	if(self.addMoreFlag){
+				 		self.addMoreFlag = false;
+				 		if (!self.hasNext) {　
 						return;　
-					}　
-					self.hasNextFlag = 2;　　　　
-					self.getStoreListData.pageNo++;
-					self.getStoreList();　
+						}　
+						self.hasNextFlag = 2;　　　　
+						self.getStoreListData.pageNo++;
+						self.getStoreList();
+				 	}
+				 	
+				setTimeout(function(){
+					self.addMoreFlag = true;
+				},300)	　
 	
 	            }
 				
@@ -303,6 +322,8 @@
 				hasNextFlag: null,
 				total:null,
 				scrollTop:null,
+				testHeight:null,
+				addMoreFlag:true,
 				getStoreListData: {
 					cityCode: '310100',
 					pageNo: 1,
