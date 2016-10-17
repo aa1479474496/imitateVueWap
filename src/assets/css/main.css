@@ -78,6 +78,7 @@ body {
 	height: 100%;
 	margin: auto;
 	max-width: 640px;
+	
 }
 
 input[type="radio"],
@@ -116,7 +117,7 @@ input[disabled] {
 	-webkit-appearance: none !important;
 }
 
-body {
+/*body {
 	position: relative;
 	overflow-x: hidden;
 	margin: auto;
@@ -125,7 +126,7 @@ body {
 	background: #efeff4;
 	color: #666;
 	-webkit-overflow-scrolling: touch;
-}
+}*/
 
 a {
 	text-decoration: none;
@@ -222,8 +223,6 @@ sup {
 .colFD4E4E {
     color: #fd4e4e;
 }
-
-
 #homeApp {
 	color: #2c3e50;
 	/*margin-top: -100px;*/
@@ -593,11 +592,12 @@ ul.pinxiang-list li img {
     position: fixed;
     width: 40px;
     height: 40px;
+    bottom: 110px;
     right: 20px;
-    bottom: 10px;
     z-index: 9999;
     border-radius: 50%;
-    background: url(../images/newIndex.png) -70px 0 no-repeat;
+    background:url(../images/newIndex.png) -70px 0 no-repeat;
     background-size: 250px 500px;
-    /*display: none;*/
+    display:none;
 }
+

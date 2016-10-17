@@ -147,10 +147,8 @@
 				<i></i>没有更多数据
 			</p>
 			<!--回到顶部-->
-			<div id="totop" @click="gotopAction"></div>
-			<!--<div id="test" style="width:100%;height:40px;font-size:20px;text-align:center;position: fixed;z-index:99999;background:skyblue;top:50%;left:0;">{{total}} ++{{scrollTop}}</div>-->
 		</div>
-
+		<div id="totop" @click="gotopAction"></div>
 	</div>
 </template>
 
@@ -186,11 +184,11 @@
 				var scrollTop = $(this).scrollTop();
 //				var scrollHeight = $(document).height();
 //				var windowHeight = $(this).height();
-//				if (scrollTop > 100) {
-//					$("#totop").fadeIn(200);
-//				} else {
-//					$("#totop").fadeOut(200);
-//				}　
+				if (scrollTop > 100) {
+					$("#totop").fadeIn(200);
+				} else {
+					$("#totop").fadeOut(200);
+				}　
 //				
 //				var $total = scrollHeight - scrollTop - windowHeight;
 //				self.total = $total;
