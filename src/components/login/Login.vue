@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="head">悦租账户登录<a class="fr" v-link="{path: '/home'}" style="font-size:12px;"><i class="i1"></i>返回</a></div>
-		<form action="#"  method="post" id="loginForm" name="loginForm" onsubmit="return checkUser()">
+		<form action="#"  method="get" id="loginForm" name="loginForm" @submit.prevent="checkUser">
 			<div class="field autoClear">
 				<div class="label">账户</div>
 				<div class="field-control">
@@ -23,7 +23,6 @@
 				<a v-link="{path: '/register'}" class="fl">免费注册</a>
 				<a id="forget" class="fr" v-link="{path: '/forgetPassword'}">忘记密码</a>
 			</div>
-			<div @click="checkUser">3333333</div>
 		</form>
 
 	</div>
@@ -62,8 +61,11 @@
 				}
 			},
 			checkUser:function(){
-				alert(1);
-				return false;
+				var self = this;
+				if(!self.passwordLogin.mobile || !self.passwordLogin.password){
+					console.log(1);
+					return false;
+				}
 			}
 		}
 	}
