@@ -2,7 +2,7 @@
 require('./assets/css/swiper.min.css')
 require('./assets/js/swiper.min.js')
 require('./assets/css/main.css')
-//require('bootstrap')
+require('bootstrap')
 require("jquery.cookie")
 Vue.use(require('vue-resource'))
 
@@ -34,6 +34,16 @@ router.map({
     'login': {   
         name: 'login', component: function (resolve) {
             require(['./components/login/Login.vue'], resolve)
+        }
+    },
+    'forgetPassword': {
+        name: 'forgetPassword', component: function (resolve) {
+            require(['./components/login/forgetPassword.vue'], resolve)
+        }
+    },
+    'register': {
+        name: 'register', component: function (resolve) {
+            require(['./components/login/register.vue'], resolve)
         }
     },
     '/*any': {

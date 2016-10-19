@@ -18,7 +18,9 @@
 		</div>
 		<a class="loginBtn" v-link="{path: '/login'}">登录</a>
 		<br style="clear:both;" />
-
+		<!--自定义指令-->
+		<div v-demo:hello2="msg"></div>
+		<div v-example a="hi" c="kitty"></div>
 		<!--大焦点图切换-->
 		<div class="swiper-container">
 			<div class="swiper-wrapper">
@@ -146,10 +148,12 @@
 			<p class="uploadNone" v-if="hasNextFlag == 3">
 				<i></i>没有更多数据
 			</p>
+			
 			<!--回到顶部-->
 		</div>
 		<div id="totop" @click="gotopAction"></div>
 		<div style="position:fixed;top:50%;line-height:40px;background:skyblue;width:100%;font-size:24px;">{{testHeight}}</div>
+		
 	</div>
 </template>
 
@@ -164,26 +168,6 @@
 			self.getStoreList();
 			var $windowH = $(window).height();
 			var $documentH = $(document).height();
-//			$(document).on("scroll", function() {
-//				var $scrollTop = $(this).scrollTop();
-//				if ($scrollTop > 100) {
-//					$("#totop").fadeIn(200);
-//				} else {
-//					$("#totop").fadeOut(200);
-//				}
-//				var $h = $(this).height();
-//				var $total = $h - $scrollTop - $windowH;
-//				console.log($total);
-//				if ($total < 2) {
-//					if (!self.hasNext) return;
-//					self.getStoreListData.pageNo++;
-//					self.hasNextFlag = 2;
-//					self.getStoreList();
-//				}
-//			});
-
-
-
 			$(window).on("scroll", function() {
 				var scrollTop = $(this).scrollTop();
 //				var scrollHeight = $(document).height();
@@ -307,6 +291,7 @@
 		},
 		data() {
 			return {
+				msg: "hello msg!",
 				floorFlashPart: false,
 				floorFlashTest: '',
 				willOpenFlag: false,
