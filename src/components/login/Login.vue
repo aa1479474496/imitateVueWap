@@ -24,7 +24,6 @@
 				<a id="forget" class="fr" v-link="{path: '/forgetPassword'}">忘记密码</a>
 			</div>
 		</form>
-
 	</div>
 
 
