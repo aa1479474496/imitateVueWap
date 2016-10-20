@@ -46,6 +46,11 @@ router.map({
             require(['./components/login/register.vue'], resolve)
         }
     },
+    'worklist': {
+        name: 'register', component: function (resolve) {
+            require(['./components/workTable/workList.vue'], resolve)
+        }
+    },
     '/*any': {
         component: function (resolve) {
             require(['./components/404.vue'], resolve)   
