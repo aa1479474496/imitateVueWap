@@ -79,6 +79,8 @@ body {
 	margin: auto;
 	max-width: 640px;
 	background-color: #F0F0F0;
+	/*让字体变得清晰*/
+	-webkit-font-smoothing:antialiased;
 }
 input{
 	outline:none!important;

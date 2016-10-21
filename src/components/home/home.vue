@@ -289,7 +289,7 @@
 				}
 			}
 		},
-		data() {
+		data:function() {
 			return {
 				msg: "hello msg!",
 				floorFlashPart: false,
