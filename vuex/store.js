@@ -19,7 +19,7 @@ const mutations = {
   // 你可以在函数里修改 state
   INCREMENT (state, amount) {
     state.count = state.count + amount;
-    state.changeColor = !state.changeColor;
+//  state.changeColor = !state.changeColor;
   }
 }
 

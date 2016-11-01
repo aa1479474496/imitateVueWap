@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click='increment'>Increment +1</button>
+    <button @click='creat(abc())'>Increment +1</button>
   </div>
 </template>
 
@@ -9,8 +9,17 @@ import { incrementCounter } from '../../../vuex/actions'
 export default {
   vuex: {
     actions: {
-      increment: incrementCounter
+      creat:incrementCounter
     }
+  },
+  ready(){
+  	
+  },
+  methods: {
+  	abc: function(){
+  		return 15
+  	}
   }
+  
 }
 </script>

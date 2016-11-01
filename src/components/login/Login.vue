@@ -19,6 +19,13 @@
 			<div class="submitDiv">
 				<button type="submit" class="button" id="submit-btn" disabled="disabled">登 录</button>
 			</div>
+			<!--测试路由-->
+			<p>当前路径：{{$route.path}}</p>
+		    <p>当前参数：{{$route.params | json}}</p>
+		    <p>路由名称：{{$route.name}}</p>
+		    <p>路由查询参数：{{$route.query | json}}</p>
+		    <p>路由匹配项：{{$route.matched | json}}</p>
+			
 			<div class="other-link">
 				<a v-link="{path: '/register'}" class="fl">免费注册</a>
 				<a id="forget" class="fr" v-link="{path: '/forgetPassword'}">忘记密码</a>

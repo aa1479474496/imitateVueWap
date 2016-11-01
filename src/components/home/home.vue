@@ -18,6 +18,7 @@
 		</div>
 		<a class="loginBtn" v-link="{path: '/login'}">登录</a>
 		<br style="clear:both;" />
+		
 		<!--自定义指令-->
 		<div v-demo:hello2="msg"></div>
 		<div v-example a="hi" c="kitty"></div>
