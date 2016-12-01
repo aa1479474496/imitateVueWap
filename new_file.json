@@ -1,0 +1,48 @@
+{
+	"errorCode": 1,
+	"data": {
+		"goodId": 1,
+		"goodTitle": "商品标题1",
+		"goodGrade": 0,
+		"goodDesc": "商品展示的划横线价格为参考价，该价格可能是品牌专柜标价、商品吊牌价或由品牌供应商提供的正品零售价（如厂商指导价、建议零售价等）或该商品在京东平台上曾经展示过的销售价；由于地区、时间的差异性和市场行情波动，品牌专柜标价、商品吊牌价等可能会与您购物时展示的不一致，该价格仅供您参考。",
+		"goodPic": "http://113.57.230.27:8001/media/20150513/nz_1.mp4|http://c.hiphotos.baidu.c…otos.baidu.com/image/pic/item/d788d43f8794a4c2474741c70af41bd5ac6e39f1.jpg",
+		"maketPrice": 20.00,
+		"rentPrice": 10,
+		"rentUnit": "次",
+		"rentDeposit": 2.00,
+		"sellPrice": -1,
+		"userId": 1,
+		"crtTime": "2016-10-10 11:06:48",
+		"addressId": 1,
+		"tradeType": 1,
+		"leaveMessageCount": 3,
+		"userName": "岁月里是谁在叹息",
+		"userPic": "http://www.ld12.com/upimg358/allimg/c150627/14353W345a130-Q2B.jpg",
+		"userSex": 1,
+		"feedbackAverageScore": 1.16667,
+		"goodInfoCount": 1,
+		"rewardInfoCount": 5,
+		"cityCode": "310100",
+		"cityName": "上海市",
+		"districtCode": "310101",
+		"districtName": "黄浦区",
+		"gpsPoint": "昱翠湾",
+		"address": "月富路55弄",
+		"latitude": 121.437289,
+		"longitude": 31.139319,
+		"leaveMessage": {
+			"msgId": 6,
+			"userId": 1,
+			"msgContent": "你好，可以和你一起吃饭吗？哈哈哈哈你好，可以和你一起吃饭吗？哈哈哈哈",
+			"crtTime": "2016-10-11 15:45:31",
+			"replyMsg": "",
+			"userName": "岁月里是谁在叹息",
+			"userPic": "http://www.ld12.com/upimg358/allimg/c150627/14353W345a130-Q2B.jpg",
+			"userSex": 1
+		},
+		"goodFreeApplyCount": 8
+	}
+}
+
+
+

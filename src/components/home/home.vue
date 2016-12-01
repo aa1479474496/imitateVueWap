@@ -18,7 +18,12 @@
 		</div>
 		<a class="loginBtn" v-link="{path: '/login'}">登录</a>
 		<br style="clear:both;" />
-		
+		<div class="col666">
+			包邮可以吗？就在周边能见面看看东西怎样嘛？请尽快回复
+			包邮可以吗？就在周边能见面看看东西怎样嘛？请尽快回复
+			包邮可以吗？就在周边能见面看看东西怎样嘛？请尽快回复
+			包邮可以吗？就在周边能见面看看东西怎样嘛？请尽快回复
+		</div>
 		<!--自定义指令-->
 		<div v-demo:hello2="msg"></div>
 		<div v-example a="hi" c="kitty"></div>

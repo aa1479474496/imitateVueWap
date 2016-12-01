@@ -1,0 +1,75 @@
+{
+	"errorCode": 1,
+	"data": {
+		"total": 8,
+		"list": [
+			{
+				"applyId": 12,
+				"userId": 1,
+				"applyReason": "质量不错，京东的就是不错，以后继续上京东自营购买，五分好评！",
+				"crtTime": "2016-10-25 14:31:53",
+				"userName": "岁月里是谁在叹息",
+				"userPic": "http://www.ld12.com/upimg358/allimg/c150627/14353W345a130-Q2B.jpg",
+				"userSex": 1
+			}, {
+				"applyId": 11,
+				"userId": 1,
+				"applyReason": "质量不错，京东的就是不错，以后继续上京东自营购买，五分好评！",
+				"crtTime": "2016-10-25 14:31:50",
+				"userName": "岁月里是谁在叹息",
+				"userPic": "http://www.ld12.com/upimg358/allimg/c150627/14353W345a130-Q2B.jpg",
+				"userSex": 1
+			}, {
+				"applyId": 10,
+				"userId": 1,
+				"applyReason": "质量不错，京东的就是不错，以后继续上京东自营购买，五分好评！",
+				"crtTime": "2016-10-25 14:17:21",
+				"userName": "岁月里是谁在叹息",
+				"userPic": "http://www.ld12.com/upimg358/allimg/c150627/14353W345a130-Q2B.jpg",
+				"userSex": 1
+			}, {
+				"applyId": 9,
+				"userId": 1,
+				"applyReason": "上身效果不错，好质量就是不一样，做工也很细致，比实体店划算多了，",
+				"crtTime": "2016-10-25 14:12:35",
+				"userName": "岁月里是谁在叹息",
+				"userPic": "http://www.ld12.com/upimg358/allimg/c150627/14353W345a130-Q2B.jpg",
+				"userSex": 1
+			}, {
+				"applyId": 8,
+				"userId": 1,
+				"applyReason": "衣服拿到了，还是挺满意的，卖家发货很快.穿起来很舒服 质量很好 满意",
+				"crtTime": "2016-10-25 14:08:34",
+				"userName": "岁月里是谁在叹息",
+				"userPic": "http://www.ld12.com/upimg358/allimg/c150627/14353W345a130-Q2B.jpg",
+				"userSex": 1
+			}, {
+				"applyId": 7,
+				"userId": 1,
+				"applyReason": "比想象中好看！快递非常给力！店家非常好细心！衣服款式非常漂亮适合我风格",
+				"crtTime": "2016-10-25 13:53:26",
+				"userName": "岁月里是谁在叹息",
+				"userPic": "http://www.ld12.com/upimg358/allimg/c150627/14353W345a130-Q2B.jpg",
+				"userSex": 1
+			}, {
+				"applyId": 3,
+				"userId": 1,
+				"applyReason": "衣服还不错质量，物流也蛮快的，不错衣服还不错质量，物流也蛮快的，不错衣服还不错质量，物流也蛮快的，不错衣服还不错质量，物流也蛮快的，不错",
+				"crtTime": "2016-10-20 16:05:14",
+				"userName": "岁月里是谁在叹息",
+				"userPic": "http://www.ld12.com/upimg358/allimg/c150627/14353W345a130-Q2B.jpg",
+				"userSex": 1
+			}, {
+				"applyId": 1,
+				"userId": 1,
+				"applyReason": "衣服不错，大小合适，款式新颖，下次再来衣服不错，大小合适，款式新颖，下次再来衣服不错，大小合适，款式新颖，下次再来衣服不错，大小合适，款式新颖，下次再来衣服不错，大小合适，款式新颖，下次再来",
+				"crtTime": "2016-10-18 16:45:36",
+				"userName": "岁月里是谁在叹息",
+				"userPic": "http://www.ld12.com/upimg358/allimg/c150627/14353W345a130-Q2B.jpg",
+				"userSex": 1
+			}
+		]
+	}
+}
+
+
