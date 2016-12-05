@@ -1,0 +1,38 @@
+{
+	"errorCode": 1,
+	"data": {
+		"total": 3,
+		"list": [
+			{
+				"msgId": 1,
+				"userId": 1,
+				"msgContent": "你好，可以和你一起看电影吗？哈哈哈哈你好，可以和你一起看电影吗？哈哈哈哈",
+				"crtTime": "2016-10-11 15:45:31",
+				"replyMsg": "回复内容1",
+				"replyTime": "2016-10-11 15:45:37",
+				"userName": "岁月里是谁在叹息",
+				"userPic": "http://www.ld12.com/upimg358/allimg/c150627/14353W345a130-Q2B.jpg",
+				"userSex": 1
+			}, {
+				"msgId": 3,
+				"userId": 1,
+				"msgContent": "你好，可以和你一起健身吗？哈哈哈哈你好，可以和你一起健身吗？哈哈111哈哈",
+				"crtTime": "2016-10-11 15:45:31",
+				"replyMsg": "回复内容2",
+				"replyTime": "2016-10-11 15:45:37",
+				"userName": "岁月里是谁在叹息",
+				"userPic": "http://www.ld12.com/upimg358/allimg/c150627/14353W345a130-Q2B.jpg",
+				"userSex": 1
+			}, {
+				"msgId": 6,
+				"userId": 1,
+				"msgContent": "你好，可以和你一起吃饭吗？哈哈哈哈你好，可以和你一起吃饭吗？哈哈哈哈",
+				"crtTime": "2016-10-11 15:45:31",
+				"replyMsg": "",
+				"userName": "岁月里是谁在叹息",
+				"userPic": "http://www.ld12.com/upimg358/allimg/c150627/14353W345a130-Q2B.jpg",
+				"userSex": 1
+			}
+		]
+	}
+}
